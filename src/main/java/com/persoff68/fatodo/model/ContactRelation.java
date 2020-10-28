@@ -24,4 +24,9 @@ public class ContactRelation extends AbstractAuditingModel {
     @NotNull
     private UUID secondUserId;
 
+    public ContactRelation(UUID firstUserId, UUID secondUserId) {
+        this.firstUserId = firstUserId;
+        this.secondUserId = secondUserId;
+    }
+
 }

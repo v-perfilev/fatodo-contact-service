@@ -64,7 +64,7 @@ public class ContactRequestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/remove/{requesterId}")
+    @GetMapping(value = "/accept/{requesterId}")
     public ResponseEntity<Void> acceptRequests(@PathVariable UUID requesterId) {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);

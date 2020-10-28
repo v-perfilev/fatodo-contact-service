@@ -21,12 +21,8 @@ public class ContactRelationService {
 
     @Transactional
     public void addForUsers(UUID firstUserId, UUID secondUserId) {
-        ContactRelation firstContactRelation = new ContactRelation();
-        firstContactRelation.setFirstUserId(firstUserId);
-        firstContactRelation.setSecondUserId(secondUserId);
-        ContactRelation secondContactRelation = new ContactRelation();
-        secondContactRelation.setFirstUserId(firstUserId);
-        secondContactRelation.setSecondUserId(secondUserId);
+        ContactRelation firstContactRelation = new ContactRelation(firstUserId, secondUserId);
+        ContactRelation secondContactRelation = new ContactRelation(secondUserId, firstUserId);
         List<ContactRelation> contactRelationList = List.of(firstContactRelation, secondContactRelation);
         contactRelationRepository.saveAll(contactRelationList);
     }
@@ -36,5 +32,6 @@ public class ContactRelationService {
         contactRelationRepository.deleteByFirstUserIdAndSecondUserId(firstUserId, secondUserId);
         contactRelationRepository.deleteByFirstUserIdAndSecondUserId(secondUserId, firstUserId);
     }
+
 
 }

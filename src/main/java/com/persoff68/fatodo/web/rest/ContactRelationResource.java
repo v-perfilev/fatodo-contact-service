@@ -19,9 +19,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(ContactRelationController.ENDPOINT)
+@RequestMapping(ContactRelationResource.ENDPOINT)
 @RequiredArgsConstructor
-public class ContactRelationController {
+public class ContactRelationResource {
     static final String ENDPOINT = "/api/contact-request";
 
     private final ContactRelationService contactRelationService;
