@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.persoff68.fatodo</groupId>
-    <artifactId>extendedmongoskeleton</artifactId>
+    <artifactId>contactservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>fatodo-contact-service</name>
     <description>Contact service for Fatodo</description>

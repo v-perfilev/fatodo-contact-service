@@ -3,7 +3,7 @@ package contracts.requestcontroller
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    name 'accept request from user by id'
+    name 'decline request from user by id'
     description 'should return status 200'
     request {
         method GET()
