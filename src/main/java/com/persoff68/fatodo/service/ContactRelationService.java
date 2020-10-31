@@ -1,5 +1,7 @@
 package com.persoff68.fatodo.service;
 
+import com.persoff68.fatodo.config.aop.cache.annotation.CacheEvictMethod;
+import com.persoff68.fatodo.config.aop.cache.annotation.CacheableMethod;
 import com.persoff68.fatodo.model.ContactRelation;
 import com.persoff68.fatodo.repository.ContactRelationRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ public class ContactRelationService {
 
     private final ContactRelationRepository contactRelationRepository;
 
+    @CacheableMethod(cacheName = "relations-by-id", key = "#id")
     public List<ContactRelation> getRelationsByUser(UUID id) {
         return contactRelationRepository.findAllByFirstUserId(id);
     }
