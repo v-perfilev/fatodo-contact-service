@@ -8,7 +8,7 @@ import java.util.UUID;
 public class TestRelationDTO extends RelationDTO {
 
     @Builder
-    public TestRelationDTO(UUID id, UUID firstUserId, UUID secondUserId) {
+    TestRelationDTO(UUID id, UUID firstUserId, UUID secondUserId) {
         super(firstUserId, secondUserId);
         this.id = id;
     }

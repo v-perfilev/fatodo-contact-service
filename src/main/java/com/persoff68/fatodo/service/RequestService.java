@@ -37,6 +37,9 @@ public class RequestService {
         if (doesRequestExist) {
             throw new RequestAlreadyExistsException();
         }
+        // TODO check if user exists
+        Request request = new Request(requesterId, recipientId);
+        requestRepository.save(request);
     }
 
     @Transactional

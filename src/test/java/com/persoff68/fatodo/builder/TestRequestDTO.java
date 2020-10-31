@@ -9,7 +9,7 @@ import java.util.UUID;
 public class TestRequestDTO extends RequestDTO {
 
     @Builder
-    public TestRequestDTO(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId) {
+    TestRequestDTO(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId) {
         super(requesterId, recipientId);
         this.id = id;
     }

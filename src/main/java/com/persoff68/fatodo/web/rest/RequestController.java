@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping(RequestController.ENDPOINT)
 @RequiredArgsConstructor
 public class RequestController {
-    static final String ENDPOINT = "/api/request";
+    static final String ENDPOINT = "/api/requests";
 
     private final RequestService requestService;
     private final RequestMapper requestMapper;

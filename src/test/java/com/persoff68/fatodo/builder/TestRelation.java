@@ -8,7 +8,7 @@ import java.util.UUID;
 public class TestRelation extends Relation {
 
     @Builder
-    public TestRelation(UUID id, UUID firstUserId, UUID secondUserId) {
+    TestRelation(UUID id, UUID firstUserId, UUID secondUserId) {
         super(firstUserId, secondUserId);
         this.id = id;
     }
@@ -18,6 +18,14 @@ public class TestRelation extends Relation {
                 .id(UUID.randomUUID())
                 .firstUserId(UUID.randomUUID())
                 .secondUserId(UUID.randomUUID());
+    }
+
+    public Relation toParent() {
+        Relation relation = new Relation();
+        relation.setId(getId());
+        relation.setFirstUserId(getFirstUserId());
+        relation.setSecondUserId(getSecondUserId());
+        return relation;
     }
 
 }

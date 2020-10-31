@@ -3,6 +3,7 @@ package com.persoff68.fatodo.service;
 import com.persoff68.fatodo.config.aop.cache.annotation.CacheableMethod;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.repository.RelationRepository;
+import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +32,11 @@ public class RelationService {
 
     @Transactional
     public void deleteByUsers(UUID firstUserId, UUID secondUserId) {
-        relationRepository.deleteByFirstUserIdAndSecondUserId(firstUserId, secondUserId);
-        relationRepository.deleteByFirstUserIdAndSecondUserId(secondUserId, firstUserId);
+        List<Relation> relationList = relationRepository.findAllByUserIds(firstUserId, secondUserId);
+        if (relationList.isEmpty()) {
+            throw new ModelNotFoundException();
+        }
+        relationRepository.deleteAll(relationList);
     }
 
 

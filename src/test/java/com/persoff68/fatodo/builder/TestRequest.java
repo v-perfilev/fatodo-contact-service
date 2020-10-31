@@ -9,7 +9,7 @@ import java.util.UUID;
 public class TestRequest extends Request {
 
     @Builder
-    public TestRequest(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId) {
+    TestRequest(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId) {
         super(requesterId, recipientId);
         this.id = id;
     }
@@ -19,6 +19,14 @@ public class TestRequest extends Request {
                 .id(UUID.randomUUID())
                 .requesterId(UUID.randomUUID())
                 .recipientId(UUID.randomUUID());
+    }
+
+    public Request toParent() {
+        Request request = new Request();
+        request.setId(getId());
+        request.setRequesterId(getRequesterId());
+        request.setRecipientId(getRecipientId());
+        return request;
     }
 
 }

@@ -24,9 +24,4 @@ public class Relation extends AbstractAuditingModel {
     @NotNull
     private UUID secondUserId;
 
-    public Relation(UUID firstUserId, UUID secondUserId) {
-        this.firstUserId = firstUserId;
-        this.secondUserId = secondUserId;
-    }
-
 }

@@ -15,9 +15,6 @@ public interface RelationRepository extends JpaRepository<Relation, UUID> {
 
     List<Relation> findAllByFirstUserId(UUID firstUserId);
 
-    @CacheEvictMethod(cacheName = "relations-by-id", key = "#firstUserId")
-    void deleteByFirstUserIdAndSecondUserId(UUID firstUserId, UUID secondUserId);
-
     @Query("SELECT r FROM Relation r WHERE (r.firstUserId = ?1 AND r.secondUserId = ?2) or (r.firstUserId = ?2 AND r.secondUserId = ?1)")
     List<Relation> findAllByUserIds(UUID firstUserId, UUID secondUserId);
 
@@ -26,4 +23,7 @@ public interface RelationRepository extends JpaRepository<Relation, UUID> {
     @NonNull
     <S extends Relation> List<S> saveAll(@NonNull Iterable<S> contactRelationList);
 
+    @Override
+    @CacheEvictMethod(cacheName = "relations-by-id", key = "#contactRelationList.firstUserId")
+    void deleteAll(@NonNull Iterable<? extends Relation> contactRelationList);
 }
