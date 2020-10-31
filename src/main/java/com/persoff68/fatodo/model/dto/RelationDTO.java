@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ContactRelationDTO extends AbstractAuditingDTO {
+public class RelationDTO extends AbstractAuditingDTO {
 
     private UUID firstUserId;
     private UUID secondUserId;

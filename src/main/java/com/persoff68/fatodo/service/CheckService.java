@@ -1,9 +1,9 @@
 package com.persoff68.fatodo.service;
 
-import com.persoff68.fatodo.model.ContactRelation;
-import com.persoff68.fatodo.model.ContactRequest;
-import com.persoff68.fatodo.repository.ContactRelationRepository;
-import com.persoff68.fatodo.repository.ContactRequestRepository;
+import com.persoff68.fatodo.model.Relation;
+import com.persoff68.fatodo.model.Request;
+import com.persoff68.fatodo.repository.RelationRepository;
+import com.persoff68.fatodo.repository.RequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,19 +14,19 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CheckService {
 
-    private final ContactRelationRepository contactRelationRepository;
-    private final ContactRequestRepository contactRequestRepository;
+    private final RelationRepository relationRepository;
+    private final RequestRepository requestRepository;
 
     public boolean doesRelationExist(UUID firstUserId, UUID secondUserId) {
-        List<ContactRelation> contactRelationList =
-                contactRelationRepository.findAllByUserIds(firstUserId, secondUserId);
-        return !contactRelationList.isEmpty();
+        List<Relation> relationList =
+                relationRepository.findAllByUserIds(firstUserId, secondUserId);
+        return !relationList.isEmpty();
     }
 
     public boolean doesRequestExist(UUID firstUserId, UUID secondUserId) {
-        List<ContactRequest> contactRequestList =
-                contactRequestRepository.findAllByUserIds(firstUserId, secondUserId);
-        return !contactRequestList.isEmpty();
+        List<Request> requestList =
+                requestRepository.findAllByUserIds(firstUserId, secondUserId);
+        return !requestList.isEmpty();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.persoff68.fatodo.service;
 
-import com.persoff68.fatodo.model.ContactRequest;
-import com.persoff68.fatodo.repository.ContactRequestRepository;
+import com.persoff68.fatodo.model.Request;
+import com.persoff68.fatodo.repository.RequestRepository;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.exception.RelationAlreadyExistsException;
 import com.persoff68.fatodo.service.exception.RequestAlreadyExistsException;
@@ -14,18 +14,18 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ContactRequestService {
+public class RequestService {
 
-    private final ContactRequestRepository contactRequestRepository;
-    private final ContactRelationService contactRelationService;
+    private final RequestRepository requestRepository;
+    private final RelationService relationService;
     private final CheckService checkService;
 
-    public List<ContactRequest> getAllOutcoming(UUID userId) {
-        return contactRequestRepository.findAllByRequesterId(userId);
+    public List<Request> getAllOutcoming(UUID userId) {
+        return requestRepository.findAllByRequesterId(userId);
     }
 
-    public List<ContactRequest> getAllIncoming(UUID userId) {
-        return contactRequestRepository.findAllByRecipientId(userId);
+    public List<Request> getAllIncoming(UUID userId) {
+        return requestRepository.findAllByRecipientId(userId);
     }
 
     public void send(UUID requesterId, UUID recipientId) {
@@ -42,14 +42,14 @@ public class ContactRequestService {
     @Transactional
     public void accept(UUID requesterId, UUID recipientId) {
         this.remove(requesterId, recipientId);
-        contactRelationService.addForUsers(requesterId, recipientId);
+        relationService.addForUsers(requesterId, recipientId);
     }
 
     public void remove(UUID requesterId, UUID recipientId) {
-        ContactRequest contactRequest = contactRequestRepository
+        Request request = requestRepository
                 .findByRequesterIdAndRecipientId(requesterId, recipientId)
                 .orElseThrow(ModelNotFoundException::new);
-        contactRequestRepository.delete(contactRequest);
+        requestRepository.delete(request);
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ContactRelation extends AbstractAuditingModel {
+public class Relation extends AbstractAuditingModel {
 
     @NotNull
     private UUID firstUserId;
@@ -24,7 +24,7 @@ public class ContactRelation extends AbstractAuditingModel {
     @NotNull
     private UUID secondUserId;
 
-    public ContactRelation(UUID firstUserId, UUID secondUserId) {
+    public Relation(UUID firstUserId, UUID secondUserId) {
         this.firstUserId = firstUserId;
         this.secondUserId = secondUserId;
     }

@@ -1,11 +1,11 @@
 package com.persoff68.fatodo.web.rest;
 
-import com.persoff68.fatodo.model.ContactRelation;
-import com.persoff68.fatodo.model.dto.ContactRelationDTO;
-import com.persoff68.fatodo.model.mapper.ContactRelationMapper;
+import com.persoff68.fatodo.model.Relation;
+import com.persoff68.fatodo.model.dto.RelationDTO;
+import com.persoff68.fatodo.model.mapper.RelationMapper;
 import com.persoff68.fatodo.security.exception.UnauthorizedException;
 import com.persoff68.fatodo.security.util.SecurityUtils;
-import com.persoff68.fatodo.service.ContactRelationService;
+import com.persoff68.fatodo.service.RelationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,29 +19,29 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(ContactRelationResource.ENDPOINT)
+@RequestMapping(RelationResource.ENDPOINT)
 @RequiredArgsConstructor
-public class ContactRelationResource {
-    static final String ENDPOINT = "/api/contact-request";
+public class RelationResource {
+    static final String ENDPOINT = "/api/relation";
 
-    private final ContactRelationService contactRelationService;
-    private final ContactRelationMapper contactRelationMapper;
+    private final RelationService relationService;
+    private final RelationMapper relationMapper;
 
     @GetMapping
-    public ResponseEntity<List<ContactRelationDTO>> getRelations() {
+    public ResponseEntity<List<RelationDTO>> getRelations() {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);
-        List<ContactRelation> contactRelationList = contactRelationService.getRelationsByUser(userId);
-        List<ContactRelationDTO> contactRelationDTOList = contactRelationList.stream()
-                .map(contactRelationMapper::pojoToDTO)
+        List<Relation> relationList = relationService.getRelationsByUser(userId);
+        List<RelationDTO> relationDTOList = relationList.stream()
+                .map(relationMapper::pojoToDTO)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(contactRelationDTOList);
+        return ResponseEntity.ok(relationDTOList);
     }
 
     @DeleteMapping(value = "/{secondUserId}")
     public ResponseEntity<Void> removeRelation(@PathVariable UUID secondUserId) {
         UUID firstUserId = SecurityUtils.getCurrentId().orElseThrow(UnauthorizedException::new);
-        contactRelationService.deleteByUsers(firstUserId, secondUserId);
+        relationService.deleteByUsers(firstUserId, secondUserId);
         return ResponseEntity.ok().build();
     }
 

@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ContactRequest extends AbstractAuditingModel {
+public class Request extends AbstractAuditingModel {
 
     @NotNull
     private UUID requesterId;
