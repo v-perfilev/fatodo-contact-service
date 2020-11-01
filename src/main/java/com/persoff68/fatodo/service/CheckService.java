@@ -1,5 +1,6 @@
 package com.persoff68.fatodo.service;
 
+import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RelationRepository;
@@ -16,6 +17,7 @@ public class CheckService {
 
     private final RelationRepository relationRepository;
     private final RequestRepository requestRepository;
+    private final UserServiceClient userServiceClient;
 
     public boolean doesRelationExist(UUID firstUserId, UUID secondUserId) {
         List<Relation> relationList =
@@ -27,6 +29,10 @@ public class CheckService {
         List<Request> requestList =
                 requestRepository.findAllByUserIds(firstUserId, secondUserId);
         return !requestList.isEmpty();
+    }
+
+    public boolean doesUserIdExist(UUID userId) {
+        return userServiceClient.doesIdExist(userId);
     }
 
 }

@@ -6,6 +6,7 @@ import com.persoff68.fatodo.FatodoContactServiceApplication;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
+import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.RequestDTO;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +49,9 @@ public class RequestControllerIT {
     RequestRepository requestRepository;
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    UserServiceClient userServiceClient;
 
     MockMvc mvc;
 
@@ -75,6 +82,8 @@ public class RequestControllerIT {
         relationRepository.deleteAll();
         relationRepository.save(relationTwoThree);
         relationRepository.save(relationThreeTwo);
+
+        when(userServiceClient.doesIdExist(any())).thenReturn(true);
     }
 
     @Test
@@ -126,6 +135,15 @@ public class RequestControllerIT {
 
         List<Request> requestList = requestRepository.findAllByRequesterId(USER_1_ID);
         assertThat(requestList.size()).isEqualTo(2);
+    }
+
+    @Test
+    @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
+    public void testSendRequest_notExist() throws Exception {
+        when(userServiceClient.doesIdExist(any())).thenReturn(false);
+        String url = ENDPOINT + "/send/" + UUID.randomUUID();
+        mvc.perform(get(url))
+                .andExpect(status().isNotFound());
     }
 
     @Test

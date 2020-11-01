@@ -29,6 +29,10 @@ public class RequestService {
     }
 
     public void send(UUID requesterId, UUID recipientId) {
+        boolean doesUserExist = checkService.doesUserIdExist(recipientId);
+        if (!doesUserExist) {
+            throw new ModelNotFoundException();
+        }
         boolean doesRelationExist = checkService.doesRelationExist(requesterId, recipientId);
         if (doesRelationExist) {
             throw new RelationAlreadyExistsException();
@@ -37,7 +41,6 @@ public class RequestService {
         if (doesRequestExist) {
             throw new RequestAlreadyExistsException();
         }
-        // TODO check if user exists
         Request request = new Request(requesterId, recipientId);
         requestRepository.save(request);
     }
