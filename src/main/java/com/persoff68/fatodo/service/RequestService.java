@@ -28,7 +28,7 @@ public class RequestService {
         return requestRepository.findAllByRecipientId(userId);
     }
 
-    public void send(UUID requesterId, UUID recipientId) {
+    public void send(UUID requesterId, UUID recipientId, String message) {
         boolean doesUserExist = checkService.doesUserIdExist(recipientId);
         if (!doesUserExist) {
             throw new ModelNotFoundException();
@@ -41,7 +41,7 @@ public class RequestService {
         if (doesRequestExist) {
             throw new RequestAlreadyExistsException();
         }
-        Request request = new Request(requesterId, recipientId);
+        Request request = new Request(requesterId, recipientId, message);
         requestRepository.save(request);
     }
 

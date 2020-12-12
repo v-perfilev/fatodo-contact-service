@@ -6,17 +6,20 @@ import com.persoff68.fatodo.FatodoContactServiceApplication;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
+import com.persoff68.fatodo.builder.TestRequestVM;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.RequestDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import com.persoff68.fatodo.web.rest.vm.RequestVM;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -31,6 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
@@ -129,10 +133,12 @@ public class RequestControllerIT {
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     public void testSendRequest_ok() throws Exception {
-        String url = ENDPOINT + "/send/" + USER_3_ID;
-        mvc.perform(get(url))
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isCreated());
-
         List<Request> requestList = requestRepository.findAllByRequesterId(USER_1_ID);
         assertThat(requestList.size()).isEqualTo(2);
     }
@@ -141,32 +147,44 @@ public class RequestControllerIT {
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     public void testSendRequest_notExist() throws Exception {
         when(userServiceClient.doesIdExist(any())).thenReturn(false);
-        String url = ENDPOINT + "/send/" + UUID.randomUUID();
-        mvc.perform(get(url))
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     public void testSendRequest_conflict_requestExists() throws Exception {
-        String url = ENDPOINT + "/send/" + USER_2_ID;
-        mvc.perform(get(url))
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_2_ID).build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isConflict());
     }
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
     public void testSendRequest_conflict_relationExists() throws Exception {
-        String url = ENDPOINT + "/send/" + USER_3_ID;
-        mvc.perform(get(url))
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isConflict());
     }
 
     @Test
     @WithAnonymousUser
     public void testSendRequest_unauthorized() throws Exception {
-        String url = ENDPOINT + "/send/" + USER_3_ID;
-        mvc.perform(get(url))
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isUnauthorized());
     }
 

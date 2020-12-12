@@ -24,4 +24,6 @@ public class Request extends AbstractAuditingModel {
     @NotNull
     private UUID recipientId;
 
+    private String message;
+
 }

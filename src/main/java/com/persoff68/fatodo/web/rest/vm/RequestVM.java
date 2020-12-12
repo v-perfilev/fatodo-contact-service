@@ -1,20 +1,20 @@
-package com.persoff68.fatodo.model.dto;
+package com.persoff68.fatodo.web.rest.vm;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class RequestDTO extends AbstractAuditingDTO {
+public class RequestVM {
 
-    private UUID requesterId;
+    @NotNull
     private UUID recipientId;
+
     private String message;
 
 }

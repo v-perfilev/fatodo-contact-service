@@ -9,8 +9,8 @@ import java.util.UUID;
 public class TestRequest extends Request {
 
     @Builder
-    TestRequest(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId) {
-        super(requesterId, recipientId);
+    TestRequest(UUID id, @NotNull UUID requesterId, @NotNull UUID recipientId,String message) {
+        super(requesterId, recipientId, message);
         this.id = id;
     }
 
@@ -26,6 +26,7 @@ public class TestRequest extends Request {
         request.setId(getId());
         request.setRequesterId(getRequesterId());
         request.setRecipientId(getRecipientId());
+        request.setMessage(getMessage());
         return request;
     }
 
