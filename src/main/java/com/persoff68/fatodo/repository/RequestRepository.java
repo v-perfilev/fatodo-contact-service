@@ -18,7 +18,8 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
 
     Optional<Request> findByRequesterIdAndRecipientId(UUID requesterId, UUID recipientId);
 
-    @Query("SELECT r FROM Request r WHERE (r.requesterId = ?1 AND r.recipientId = ?2) or (r.requesterId = ?2 AND r.recipientId = ?1)")
+    @Query("SELECT r FROM Request r WHERE (r.requesterId = ?1 AND r.recipientId = ?2)"
+            + " or (r.requesterId = ?2 AND r.recipientId = ?1)")
     List<Request> findAllByUserIds(UUID firstUserId, UUID secondUserId);
 
 }
