@@ -9,7 +9,7 @@ import java.util.UUID;
 @FeignClient(name = "user-service", primary = false)
 public interface UserServiceClient {
 
-    @GetMapping(value = "/api/check/id-exists/{id}")
+    @GetMapping(value = "/api/check/id/{id}")
     boolean doesIdExist(@PathVariable UUID id);
 
 }
