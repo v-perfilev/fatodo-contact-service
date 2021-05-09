@@ -1,7 +1,6 @@
 package com.persoff68.fatodo.web.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.persoff68.fatodo.FatodoContactServiceApplication;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
@@ -10,7 +9,6 @@ import com.persoff68.fatodo.builder.TestRequestVM;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
-import com.persoff68.fatodo.model.dto.RequestDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
 import com.persoff68.fatodo.web.rest.vm.RequestVM;
@@ -22,7 +20,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -88,46 +85,6 @@ public class RequestControllerIT {
         relationRepository.save(relationThreeTwo);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
-    }
-
-    @Test
-    @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testGetOutcomingRequests_ok() throws Exception {
-        String url = ENDPOINT + "/outcoming";
-        ResultActions resultActions = mvc.perform(get(url))
-                .andExpect(status().isOk());
-        String resultString = resultActions.andReturn().getResponse().getContentAsString();
-        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RequestDTO.class);
-        List<RequestDTO> resultDTOList = objectMapper.readValue(resultString, listType);
-        assertThat(resultDTOList.size()).isEqualTo(1);
-    }
-
-    @Test
-    @WithAnonymousUser
-    public void testGetOutcomingRequests_unauthorized() throws Exception {
-        String url = ENDPOINT + "/outcoming";
-        mvc.perform(get(url))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testGetIncomingRequests_ok() throws Exception {
-        String url = ENDPOINT + "/incoming";
-        ResultActions resultActions = mvc.perform(get(url))
-                .andExpect(status().isOk());
-        String resultString = resultActions.andReturn().getResponse().getContentAsString();
-        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RequestDTO.class);
-        List<RequestDTO> resultDTOList = objectMapper.readValue(resultString, listType);
-        assertThat(resultDTOList.size()).isEqualTo(1);
-    }
-
-    @Test
-    @WithAnonymousUser
-    public void testGetIncomingRequests_unauthorized() throws Exception {
-        String url = ENDPOINT + "/incoming";
-        mvc.perform(get(url))
-                .andExpect(status().isUnauthorized());
     }
 
     @Test

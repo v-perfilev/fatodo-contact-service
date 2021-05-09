@@ -7,7 +7,7 @@ Contract.make {
     description 'should return status 200 and list of RelationDTOs'
     request {
         method GET()
-        url("/api/relation")
+        url("/api/relations")
         headers {
             header 'Authorization': $(
                     consumer(containing("Bearer")),

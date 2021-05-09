@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping(RelationResource.ENDPOINT)
 @RequiredArgsConstructor
 public class RelationResource {
-    static final String ENDPOINT = "/api/relation";
+    static final String ENDPOINT = "/api/relations";
 
     private final RelationService relationService;
     private final RelationMapper relationMapper;
