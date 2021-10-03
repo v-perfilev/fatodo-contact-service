@@ -1,5 +1,7 @@
 package com.persoff68.fatodo.service;
 
+import com.persoff68.fatodo.client.ChatServiceClient;
+import com.persoff68.fatodo.model.Message;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RequestRepository;
 import com.persoff68.fatodo.service.exception.ModelInvalidException;
@@ -20,6 +22,7 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final RelationService relationService;
     private final CheckService checkService;
+    private final ChatServiceClient chatServiceClient;
 
     public List<Request> getAllOutcoming(UUID userId) {
         return requestRepository.findAllByRequesterId(userId);
@@ -47,6 +50,11 @@ public class RequestService {
         }
         Request request = new Request(requesterId, recipientId, message);
         requestRepository.save(request);
+        if (message != null && !message.isBlank()) {
+            Message messageToSend = new Message();
+            messageToSend.setText(message);
+            chatServiceClient.sendDirect(recipientId, messageToSend);
+        }
     }
 
     @Transactional

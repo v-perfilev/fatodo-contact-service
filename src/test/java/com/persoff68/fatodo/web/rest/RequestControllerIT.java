@@ -6,6 +6,7 @@ import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
 import com.persoff68.fatodo.builder.TestRequestVM;
+import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
@@ -28,6 +29,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,6 +55,8 @@ public class RequestControllerIT {
 
     @MockBean
     UserServiceClient userServiceClient;
+    @MockBean
+    ChatServiceClient chatServiceClient;
 
     MockMvc mvc;
 
@@ -85,6 +89,7 @@ public class RequestControllerIT {
         relationRepository.save(relationThreeTwo);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
+        doNothing().when(chatServiceClient).sendDirect(any(), any());
     }
 
     @Test
