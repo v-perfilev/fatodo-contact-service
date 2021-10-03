@@ -1,6 +1,5 @@
 package com.persoff68.fatodo.web.rest;
 
-import com.persoff68.fatodo.model.mapper.RequestMapper;
 import com.persoff68.fatodo.security.exception.UnauthorizedException;
 import com.persoff68.fatodo.security.util.SecurityUtils;
 import com.persoff68.fatodo.service.RequestService;
@@ -25,7 +24,6 @@ public class RequestController {
     static final String ENDPOINT = "/api/requests";
 
     private final RequestService requestService;
-    private final RequestMapper requestMapper;
 
     @PostMapping(value = "/send")
     public ResponseEntity<Void> sendRequest(@RequestBody @Valid RequestVM requestVM) {

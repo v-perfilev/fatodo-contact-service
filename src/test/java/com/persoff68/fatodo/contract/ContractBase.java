@@ -2,6 +2,7 @@ package com.persoff68.fatodo.contract;
 
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
+import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
@@ -18,6 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -36,6 +38,8 @@ public abstract class ContractBase {
     RequestRepository requestRepository;
     @MockBean
     UserServiceClient userServiceClient;
+    @MockBean
+    ChatServiceClient chatServiceClient;
 
     @BeforeEach
     public void setup() {
@@ -73,6 +77,7 @@ public abstract class ContractBase {
         relationRepository.save(relationFourOne);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
+        doNothing().when(chatServiceClient).sendDirect(any(), any());
     }
 
 }
