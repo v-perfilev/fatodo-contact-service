@@ -94,7 +94,7 @@ public class RequestControllerIT {
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isCreated());
         List<Request> requestList = requestRepository.findAllByRequesterId(USER_1_ID);
         assertThat(requestList.size()).isEqualTo(2);
@@ -108,8 +108,19 @@ public class RequestControllerIT {
         RequestVM vm = TestRequestVM.defaultBuilder().build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
+    public void testSendRequest_badRequest_sameUser() throws Exception {
+        String url = ENDPOINT + "/send";
+        RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_1_ID).build().toParent();
+        String requestBody = objectMapper.writeValueAsString(vm);
+        mvc.perform(post(url)
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -119,7 +130,7 @@ public class RequestControllerIT {
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_2_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isConflict());
     }
 
@@ -130,7 +141,7 @@ public class RequestControllerIT {
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isConflict());
     }
 
@@ -141,7 +152,7 @@ public class RequestControllerIT {
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isUnauthorized());
     }
 

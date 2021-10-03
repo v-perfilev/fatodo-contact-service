@@ -2,6 +2,7 @@ package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RequestRepository;
+import com.persoff68.fatodo.service.exception.ModelInvalidException;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.exception.RelationAlreadyExistsException;
 import com.persoff68.fatodo.service.exception.RequestAlreadyExistsException;
@@ -29,6 +30,9 @@ public class RequestService {
     }
 
     public void send(UUID requesterId, UUID recipientId, String message) {
+        if (requesterId.equals(recipientId)) {
+            throw new ModelInvalidException();
+        }
         boolean doesUserExist = checkService.doesUserIdExist(recipientId);
         if (!doesUserExist) {
             throw new ModelNotFoundException();
