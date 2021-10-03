@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @SpringBootTest
-@AutoConfigureStubRunner(ids = {"com.persoff68.fatodo:userservice:+:stubs"},
+@AutoConfigureStubRunner(ids = {"com.persoff68.fatodo:chatservice:+:stubs"},
         stubsMode = StubRunnerProperties.StubsMode.REMOTE)
 public class ChatServiceCT {
 
