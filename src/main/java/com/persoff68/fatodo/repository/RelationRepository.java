@@ -13,6 +13,8 @@ import java.util.UUID;
 @Repository
 public interface RelationRepository extends JpaRepository<Relation, UUID> {
 
+    int countByFirstUserId(UUID firstUserId);
+
     List<Relation> findAllByFirstUserId(UUID firstUserId);
 
     @Query("SELECT r FROM Relation r WHERE (r.firstUserId = ?1 AND r.secondUserId = ?2)"

@@ -12,6 +12,10 @@ import java.util.UUID;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, UUID> {
 
+    int countByRequesterId(UUID requesterId);
+
+    int countByRecipientId(UUID recipientId);
+
     List<Request> findAllByRequesterId(UUID requesterId);
 
     List<Request> findAllByRecipientId(UUID recipientId);
