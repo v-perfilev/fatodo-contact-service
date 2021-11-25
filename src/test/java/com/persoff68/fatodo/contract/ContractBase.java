@@ -45,6 +45,9 @@ public abstract class ContractBase {
     public void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
 
+        requestRepository.deleteAll();
+        relationRepository.deleteAll();
+
         Request requestOneTwo = TestRequest.defaultBuilder()
                 .id(null)
                 .requesterId(USER_1_ID)
@@ -57,7 +60,6 @@ public abstract class ContractBase {
                 .recipientId(USER_1_ID)
                 .build().toParent();
 
-        requestRepository.deleteAll();
         requestRepository.save(requestOneTwo);
         requestRepository.save(requestThreeOne);
 
@@ -72,7 +74,6 @@ public abstract class ContractBase {
                 .secondUserId(USER_1_ID)
                 .build().toParent();
 
-        relationRepository.deleteAll();
         relationRepository.save(relationOneFour);
         relationRepository.save(relationFourOne);
 
