@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,14 +21,12 @@ public class CheckService {
     private final UserServiceClient userServiceClient;
 
     public boolean doesRelationExist(UUID firstUserId, UUID secondUserId) {
-        List<Relation> relationList =
-                relationRepository.findAllByUserIds(firstUserId, secondUserId);
+        List<Relation> relationList = relationRepository.findAllByUserIds(firstUserId, secondUserId);
         return !relationList.isEmpty();
     }
 
     public boolean doesRequestExist(UUID firstUserId, UUID secondUserId) {
-        List<Request> requestList =
-                requestRepository.findAllByUserIds(firstUserId, secondUserId);
+        List<Request> requestList = requestRepository.findAllByUserIds(firstUserId, secondUserId);
         return !requestList.isEmpty();
     }
 
@@ -35,4 +34,9 @@ public class CheckService {
         return userServiceClient.doesIdExist(userId);
     }
 
+    public boolean areUsersInContactList(UUID userId, List<UUID> userIdList) {
+        List<Relation> relationList = relationRepository.findAllByFirstUserId(userId);
+        List<UUID> contactIdList = relationList.stream().map(Relation::getSecondUserId).collect(Collectors.toList());
+        return contactIdList.containsAll(userIdList);
+    }
 }
