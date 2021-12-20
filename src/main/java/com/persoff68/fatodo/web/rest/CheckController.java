@@ -21,7 +21,7 @@ public class CheckController {
 
     private final CheckService checkService;
 
-    @PostMapping("contacts")
+    @PostMapping("/contacts")
     public ResponseEntity<Boolean> areUsersInContactList(@RequestBody List<UUID> userIdList) {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);
