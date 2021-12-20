@@ -1,6 +1,5 @@
 package com.persoff68.fatodo.service;
 
-import com.persoff68.fatodo.config.aop.cache.annotation.CacheableMethod;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
@@ -17,7 +16,6 @@ public class RelationService {
 
     private final RelationRepository relationRepository;
 
-    @CacheableMethod(cacheName = "relations-by-id", key = "#id")
     public List<Relation> getRelationsByUser(UUID id) {
         return relationRepository.findAllByFirstUserId(id);
     }
