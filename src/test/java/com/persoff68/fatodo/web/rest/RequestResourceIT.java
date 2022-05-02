@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
-public class RequestResourceIT {
+class RequestResourceIT {
     private static final String ENDPOINT = "/api/requests";
 
     private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
@@ -56,7 +56,7 @@ public class RequestResourceIT {
     MockMvc mvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 
         Request requestOneTwo = TestRequest.defaultBuilder()
@@ -88,19 +88,19 @@ public class RequestResourceIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testGetOutcomingRequests_ok() throws Exception {
+    void testGetOutcomingRequests_ok() throws Exception {
         String url = ENDPOINT + "/outcoming";
         ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RequestDTO.class);
         List<RequestDTO> resultDTOList = objectMapper.readValue(resultString, listType);
-        assertThat(resultDTOList.size()).isEqualTo(1);
+        assertThat(resultDTOList).hasSize(1);
     }
 
     @Test
     @WithAnonymousUser
-    public void testGetOutcomingRequests_unauthorized() throws Exception {
+    void testGetOutcomingRequests_unauthorized() throws Exception {
         String url = ENDPOINT + "/outcoming";
         mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());
@@ -108,19 +108,19 @@ public class RequestResourceIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testGetIncomingRequests_ok() throws Exception {
+    void testGetIncomingRequests_ok() throws Exception {
         String url = ENDPOINT + "/incoming";
         ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RequestDTO.class);
         List<RequestDTO> resultDTOList = objectMapper.readValue(resultString, listType);
-        assertThat(resultDTOList.size()).isEqualTo(1);
+        assertThat(resultDTOList).hasSize(1);
     }
 
     @Test
     @WithAnonymousUser
-    public void testGetIncomingRequests_unauthorized() throws Exception {
+    void testGetIncomingRequests_unauthorized() throws Exception {
         String url = ENDPOINT + "/incoming";
         mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());

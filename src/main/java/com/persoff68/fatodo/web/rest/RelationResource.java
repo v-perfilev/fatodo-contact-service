@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(RelationResource.ENDPOINT)
@@ -34,7 +33,7 @@ public class RelationResource {
         List<Relation> relationList = relationService.getRelationsByUser(userId);
         List<RelationDTO> relationDTOList = relationList.stream()
                 .map(relationMapper::pojoToDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(relationDTOList);
     }
 

@@ -36,7 +36,9 @@ public class CheckService {
 
     public boolean areUsersInContactList(UUID userId, List<UUID> userIdList) {
         List<Relation> relationList = relationRepository.findAllByFirstUserId(userId);
-        List<UUID> contactIdList = relationList.stream().map(Relation::getSecondUserId).collect(Collectors.toList());
-        return contactIdList.containsAll(userIdList);
+        return relationList.stream()
+                .map(Relation::getSecondUserId)
+                .collect(Collectors.toSet())
+                .containsAll(userIdList);
     }
 }

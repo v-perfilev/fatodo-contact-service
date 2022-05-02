@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(RequestResource.ENDPOINT)
@@ -31,7 +30,7 @@ public class RequestResource {
         List<Request> requestList = requestService.getAllOutcoming(id);
         List<RequestDTO> requestDTOList = requestList.stream()
                 .map(requestMapper::pojoToDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(requestDTOList);
     }
 
@@ -42,7 +41,7 @@ public class RequestResource {
         List<Request> requestList = requestService.getAllIncoming(userId);
         List<RequestDTO> requestDTOList = requestList.stream()
                 .map(requestMapper::pojoToDTO)
-                .collect(Collectors.toList());
+                .toList();
         return ResponseEntity.ok(requestDTOList);
     }
 

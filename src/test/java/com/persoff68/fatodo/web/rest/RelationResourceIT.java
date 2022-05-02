@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
-public class RelationResourceIT {
+class RelationResourceIT {
     private static final String ENDPOINT = "/api/relations";
 
     private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
@@ -48,7 +48,7 @@ public class RelationResourceIT {
     MockMvc mvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 
         Relation relationOneTwo = TestRelation.defaultBuilder()
@@ -81,36 +81,36 @@ public class RelationResourceIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testGetRelations_ok() throws Exception {
+    void testGetRelations_ok() throws Exception {
         ResultActions resultActions = mvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RelationDTO.class);
         List<RelationDTO> resultDTOList = objectMapper.readValue(resultString, listType);
-        assertThat(resultDTOList.size()).isEqualTo(2);
+        assertThat(resultDTOList).hasSize(2);
     }
 
     @Test
     @WithAnonymousUser
-    public void testGetRelations_unauthorized() throws Exception {
+    void testGetRelations_unauthorized() throws Exception {
         mvc.perform(get(ENDPOINT))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testRemoveRelation_ok() throws Exception {
+    void testRemoveRelation_ok() throws Exception {
         String url = ENDPOINT + "/" + USER_3_ID;
         mvc.perform(delete(url))
                 .andExpect(status().isOk());
 
         List<Relation> relationList = relationRepository.findAllByFirstUserId(USER_1_ID);
-        assertThat(relationList.size()).isEqualTo(1);
+        assertThat(relationList).hasSize(1);
     }
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testRemoveRelation_notFound() throws Exception {
+    void testRemoveRelation_notFound() throws Exception {
         String url = ENDPOINT + "/" + UUID.randomUUID();
         mvc.perform(delete(url))
                 .andExpect(status().isNotFound());
@@ -118,7 +118,7 @@ public class RelationResourceIT {
 
     @Test
     @WithAnonymousUser
-    public void testRemoveRelation_unauthorized() throws Exception {
+    void testRemoveRelation_unauthorized() throws Exception {
         String url = ENDPOINT + "/" + USER_3_ID;
         mvc.perform(delete(url))
                 .andExpect(status().isUnauthorized());

@@ -10,7 +10,6 @@ import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.ContactInfoDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
 @AutoConfigureMockMvc
-public class InfoControllerIT {
+class InfoControllerIT {
     private static final String ENDPOINT = "/api/info";
 
     private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
@@ -47,7 +46,7 @@ public class InfoControllerIT {
     ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         relationRepository.deleteAll();
         requestRepository.deleteAll();
 
@@ -83,7 +82,7 @@ public class InfoControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testGetInfo_ok() throws Exception {
+    void testGetInfo_ok() throws Exception {
         ResultActions resultActions = mvc.perform(get(ENDPOINT))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
@@ -95,7 +94,7 @@ public class InfoControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testGetInfo_unauthorized() throws Exception {
+    void testGetInfo_unauthorized() throws Exception {
         mvc.perform(get(ENDPOINT))
                 .andExpect(status().isUnauthorized());
     }

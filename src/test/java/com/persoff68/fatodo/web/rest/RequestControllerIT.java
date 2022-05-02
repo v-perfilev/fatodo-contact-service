@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
-public class RequestControllerIT {
+class RequestControllerIT {
     private static final String ENDPOINT = "/api/requests";
 
     private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
@@ -61,7 +61,7 @@ public class RequestControllerIT {
     MockMvc mvc;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
 
         Request requestOneTwo = TestRequest.defaultBuilder()
@@ -94,7 +94,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testSendRequest_ok() throws Exception {
+    void testSendRequest_ok() throws Exception {
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
@@ -102,12 +102,12 @@ public class RequestControllerIT {
                         .contentType(MediaType.APPLICATION_JSON).content(requestBody))
                 .andExpect(status().isCreated());
         List<Request> requestList = requestRepository.findAllByRequesterId(USER_1_ID);
-        assertThat(requestList.size()).isEqualTo(2);
+        assertThat(requestList).hasSize(2);
     }
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testSendRequest_notExist() throws Exception {
+    void testSendRequest_notExist() throws Exception {
         when(userServiceClient.doesIdExist(any())).thenReturn(false);
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().build().toParent();
@@ -119,7 +119,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testSendRequest_badRequest_sameUser() throws Exception {
+    void testSendRequest_badRequest_sameUser() throws Exception {
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_1_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
@@ -130,7 +130,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testSendRequest_conflict_requestExists() throws Exception {
+    void testSendRequest_conflict_requestExists() throws Exception {
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_2_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
@@ -141,7 +141,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testSendRequest_conflict_relationExists() throws Exception {
+    void testSendRequest_conflict_relationExists() throws Exception {
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
@@ -152,7 +152,7 @@ public class RequestControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testSendRequest_unauthorized() throws Exception {
+    void testSendRequest_unauthorized() throws Exception {
         String url = ENDPOINT + "/send";
         RequestVM vm = TestRequestVM.defaultBuilder().recipientId(USER_3_ID).build().toParent();
         String requestBody = objectMapper.writeValueAsString(vm);
@@ -163,7 +163,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testRemoveRequest_ok() throws Exception {
+    void testRemoveRequest_ok() throws Exception {
         String url = ENDPOINT + "/remove/" + USER_2_ID;
         mvc.perform(get(url))
                 .andExpect(status().isOk());
@@ -171,7 +171,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testRemoveRequest_notFound() throws Exception {
+    void testRemoveRequest_notFound() throws Exception {
         String url = ENDPOINT + "/remove/" + USER_3_ID;
         mvc.perform(get(url))
                 .andExpect(status().isNotFound());
@@ -179,7 +179,7 @@ public class RequestControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testRemoveRequest_unauthorized() throws Exception {
+    void testRemoveRequest_unauthorized() throws Exception {
         String url = ENDPOINT + "/remove/" + USER_2_ID;
         mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());
@@ -187,7 +187,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testAcceptRequest_ok() throws Exception {
+    void testAcceptRequest_ok() throws Exception {
         String url = ENDPOINT + "/accept/" + USER_1_ID;
         mvc.perform(get(url))
                 .andExpect(status().isOk());
@@ -195,7 +195,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testAcceptRequest_notFound() throws Exception {
+    void testAcceptRequest_notFound() throws Exception {
         String url = ENDPOINT + "/accept/" + USER_3_ID;
         mvc.perform(get(url))
                 .andExpect(status().isNotFound());
@@ -203,7 +203,7 @@ public class RequestControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testAcceptRequest_unauthorized() throws Exception {
+    void testAcceptRequest_unauthorized() throws Exception {
         String url = ENDPOINT + "/accept/" + USER_1_ID;
         mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());
@@ -211,7 +211,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testDeclineRequest_ok() throws Exception {
+    void testDeclineRequest_ok() throws Exception {
         String url = ENDPOINT + "/decline/" + USER_1_ID;
         mvc.perform(get(url))
                 .andExpect(status().isOk());
@@ -219,7 +219,7 @@ public class RequestControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
-    public void testDeclineRequest_notFound() throws Exception {
+    void testDeclineRequest_notFound() throws Exception {
         String url = ENDPOINT + "/decline/" + USER_3_ID;
         mvc.perform(get(url))
                 .andExpect(status().isNotFound());
@@ -227,7 +227,7 @@ public class RequestControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testDeclineRequest_unauthorized() throws Exception {
+    void testDeclineRequest_unauthorized() throws Exception {
         String url = ENDPOINT + "/decline/" + USER_1_ID;
         mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());

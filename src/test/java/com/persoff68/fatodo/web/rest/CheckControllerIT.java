@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
 @AutoConfigureMockMvc
-public class CheckControllerIT {
+class CheckControllerIT {
     private static final String ENDPOINT = "/api/check";
 
     private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
@@ -43,7 +43,7 @@ public class CheckControllerIT {
     ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         relationRepository.deleteAll();
         requestRepository.deleteAll();
 
@@ -64,7 +64,7 @@ public class CheckControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testAreUsersInContactList_true() throws Exception {
+    void testAreUsersInContactList_true() throws Exception {
         String url = ENDPOINT + "/contacts";
         List<UUID> userIdList = List.of(USER_2_ID);
         String requestBody = objectMapper.writeValueAsString(userIdList);
@@ -78,7 +78,7 @@ public class CheckControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testAreUsersInContactList_false_1() throws Exception {
+    void testAreUsersInContactList_false_1() throws Exception {
         String url = ENDPOINT + "/contacts";
         List<UUID> userIdList = List.of(USER_2_ID, UUID.randomUUID());
         String requestBody = objectMapper.writeValueAsString(userIdList);
@@ -92,7 +92,7 @@ public class CheckControllerIT {
 
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
-    public void testAreUsersInContactList_false_2() throws Exception {
+    void testAreUsersInContactList_false_2() throws Exception {
         String url = ENDPOINT + "/contacts";
         List<UUID> userIdList = List.of(UUID.randomUUID());
         String requestBody = objectMapper.writeValueAsString(userIdList);
@@ -106,7 +106,7 @@ public class CheckControllerIT {
 
     @Test
     @WithAnonymousUser
-    public void testGetInfo_unauthorized() throws Exception {
+    void testGetInfo_unauthorized() throws Exception {
         String url = ENDPOINT + "/contacts";
         List<UUID> userIdList = List.of(USER_2_ID, UUID.randomUUID());
         String requestBody = objectMapper.writeValueAsString(userIdList);
