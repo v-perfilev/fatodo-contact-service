@@ -20,6 +20,17 @@ public class RelationService {
         return relationRepository.findAllByFirstUserId(id);
     }
 
+    public List<Relation> getCommonRelationsByUsers(UUID firstUserId, UUID secondUserId) {
+        List<Relation> firstUserRelationList = relationRepository.findAllByFirstUserId(firstUserId);
+        List<Relation> secondUserRelationList = relationRepository.findAllByFirstUserId(secondUserId);
+        List<UUID> relationUserIdList = secondUserRelationList.stream()
+                .map(Relation::getSecondUserId)
+                .toList();
+        return firstUserRelationList.stream()
+                .filter(g -> relationUserIdList.contains(g.getSecondUserId()))
+                .toList();
+    }
+
     @Transactional
     public void addForUsers(UUID firstUserId, UUID secondUserId) {
         Relation firstRelation = new Relation(firstUserId, secondUserId);

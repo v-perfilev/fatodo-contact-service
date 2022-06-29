@@ -98,6 +98,26 @@ class RelationResourceIT {
     }
 
     @Test
+    @WithCustomSecurityContext(id = "8d583dfd-acfb-4481-80e6-0b46170e2a18")
+    void testGetCommonRelationsByUsers_ok() throws Exception {
+        String url = ENDPOINT + "/" + USER_3_ID + "/user";
+        ResultActions resultActions = mvc.perform(get(url))
+                .andExpect(status().isOk());
+        String resultString = resultActions.andReturn().getResponse().getContentAsString();
+        CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(List.class, RelationDTO.class);
+        List<RelationDTO> resultDTOList = objectMapper.readValue(resultString, listType);
+        assertThat(resultDTOList).hasSize(1);
+    }
+
+    @Test
+    @WithAnonymousUser
+    void testGetCommonRelationsByUsers_unauthorized() throws Exception {
+        String url = ENDPOINT + "/" + USER_3_ID + "/user";
+        mvc.perform(get(url))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     void testRemoveRelation_ok() throws Exception {
         String url = ENDPOINT + "/" + USER_3_ID;

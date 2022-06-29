@@ -29,6 +29,7 @@ public abstract class ContractBase {
     private static final UUID USER_2_ID = UUID.fromString("8d583dfd-acfb-4481-80e6-0b46170e2a18");
     private static final UUID USER_3_ID = UUID.fromString("5b8bfe7e-7651-4d39-a70c-22c997e376b1");
     private static final UUID USER_4_ID = UUID.fromString("6e7fb1ec-dd71-4ab9-9b11-b632c4ccbf18");
+    private static final UUID USER_5_ID = UUID.fromString("0554562b-1ef5-4311-9462-6aa3c40b5627");
 
     @Autowired
     WebApplicationContext context;
@@ -74,8 +75,22 @@ public abstract class ContractBase {
                 .secondUserId(USER_1_ID)
                 .build().toParent();
 
+        Relation relationFiveFour = TestRelation.defaultBuilder()
+                .id(null)
+                .firstUserId(USER_5_ID)
+                .secondUserId(USER_4_ID)
+                .build().toParent();
+        Relation relationFourFive = TestRelation.defaultBuilder()
+                .id(null)
+                .firstUserId(USER_4_ID)
+                .secondUserId(USER_5_ID)
+                .build().toParent();
+
         relationRepository.save(relationOneFour);
         relationRepository.save(relationFourOne);
+
+        relationRepository.save(relationFiveFour);
+        relationRepository.save(relationFourFive);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
         doNothing().when(chatServiceClient).sendDirect(any(), any());

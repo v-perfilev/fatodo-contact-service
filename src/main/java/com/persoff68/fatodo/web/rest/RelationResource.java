@@ -37,6 +37,17 @@ public class RelationResource {
         return ResponseEntity.ok(relationDTOList);
     }
 
+    @GetMapping(value = "/{secondUserId}/user")
+    public ResponseEntity<List<RelationDTO>> getCommonRelationsWithUser(@PathVariable UUID secondUserId) {
+        UUID firstUserId = SecurityUtils.getCurrentId()
+                .orElseThrow(UnauthorizedException::new);
+        List<Relation> relationList = relationService.getCommonRelationsByUsers(firstUserId, secondUserId);
+        List<RelationDTO> relationDTOList = relationList.stream()
+                .map(relationMapper::pojoToDTO)
+                .toList();
+        return ResponseEntity.ok(relationDTOList);
+    }
+
     @DeleteMapping(value = "/{secondUserId}")
     public ResponseEntity<Void> removeRelation(@PathVariable UUID secondUserId) {
         UUID firstUserId = SecurityUtils.getCurrentId().orElseThrow(UnauthorizedException::new);
