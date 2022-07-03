@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.UUID;
 
-@FeignClient(name = "chat-service", primary = false)
+@FeignClient(name = "chat-service", primary = false, qualifiers = {"feignChatServiceClient"})
 public interface ChatServiceClient {
 
     @PostMapping(value = "/api/messages/direct/{recipientId}")
