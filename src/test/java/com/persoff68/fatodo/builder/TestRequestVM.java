@@ -1,7 +1,6 @@
 package com.persoff68.fatodo.builder;
 
-import com.persoff68.fatodo.model.Request;
-import com.persoff68.fatodo.web.rest.vm.RequestVM;
+import com.persoff68.fatodo.model.vm.RequestVM;
 import lombok.Builder;
 
 import javax.validation.constraints.NotNull;

@@ -12,7 +12,7 @@ import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
-import com.persoff68.fatodo.web.rest.vm.RequestVM;
+import com.persoff68.fatodo.model.vm.RequestVM;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

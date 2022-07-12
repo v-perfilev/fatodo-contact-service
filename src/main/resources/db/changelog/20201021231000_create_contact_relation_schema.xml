@@ -24,6 +24,10 @@
             <column name="last_modified_at" type="timestamp"/>
         </createTable>
 
+        <createIndex indexName="index_contact_relation_first_user" tableName="ftd_contact_relation">
+            <column name="first_user_id"/>
+        </createIndex>
+
     </changeSet>
 
 </databaseChangeLog>

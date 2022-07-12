@@ -2,7 +2,7 @@ package com.persoff68.fatodo.web.rest;
 
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.RequestDTO;
-import com.persoff68.fatodo.model.mapper.RequestMapper;
+import com.persoff68.fatodo.mapper.RequestMapper;
 import com.persoff68.fatodo.security.exception.UnauthorizedException;
 import com.persoff68.fatodo.security.util.SecurityUtils;
 import com.persoff68.fatodo.service.RequestService;

@@ -3,7 +3,7 @@ package com.persoff68.fatodo.web.rest;
 import com.persoff68.fatodo.security.exception.UnauthorizedException;
 import com.persoff68.fatodo.security.util.SecurityUtils;
 import com.persoff68.fatodo.service.RequestService;
-import com.persoff68.fatodo.web.rest.vm.RequestVM;
+import com.persoff68.fatodo.model.vm.RequestVM;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
