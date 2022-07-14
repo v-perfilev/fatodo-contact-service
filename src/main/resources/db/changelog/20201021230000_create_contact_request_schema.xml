@@ -29,7 +29,7 @@
             <column name="requester_id"/>
         </createIndex>
 
-        <createIndex indexName="index_contact_request_recipient" tableName="ftd_contact_recipient">
+        <createIndex indexName="index_contact_request_recipient" tableName="ftd_contact_request">
             <column name="recipient_id"/>
         </createIndex>
 
