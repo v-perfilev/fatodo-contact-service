@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 public class ContactInfoDTO {
 
     private int relationCount;
+
     private int outcomingRequestCount;
+
     private int incomingRequestCount;
 
 }

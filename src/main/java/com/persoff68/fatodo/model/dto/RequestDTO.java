@@ -14,7 +14,9 @@ import java.util.UUID;
 public class RequestDTO extends AbstractAuditingDTO {
 
     private UUID requesterId;
+
     private UUID recipientId;
+
     private String message;
 
 }

@@ -14,6 +14,7 @@ import java.util.UUID;
 public class RelationDTO extends AbstractAuditingDTO {
 
     private UUID firstUserId;
+
     private UUID secondUserId;
 
 }
