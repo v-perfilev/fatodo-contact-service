@@ -1,6 +1,7 @@
 package com.persoff68.fatodo.config;
 
 import com.persoff68.fatodo.client.ChatServiceClient;
+import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.BeanFactory;
@@ -18,6 +19,15 @@ public class ClientConfiguration {
     @Primary
     public ChatServiceClient chatClient() {
         return (ChatServiceClient) beanFactory.getBean("chatServiceClientWrapper");
+    }
+
+    @Bean
+    @Primary
+    public EventServiceClient eventClient() {
+        boolean kafkaProducerExists = beanFactory.containsBean("eventProducer");
+        return kafkaProducerExists
+                ? (EventServiceClient) beanFactory.getBean("eventProducer")
+                : (EventServiceClient) beanFactory.getBean("eventServiceClientWrapper");
     }
 
     @Bean

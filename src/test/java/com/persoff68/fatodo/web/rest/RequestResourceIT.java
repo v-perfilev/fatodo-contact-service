@@ -6,34 +6,36 @@ import com.persoff68.fatodo.FatodoContactServiceApplication;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
+import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.RequestDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
+@AutoConfigureMockMvc
 class RequestResourceIT {
     private static final String ENDPOINT = "/api/requests";
 
@@ -42,7 +44,8 @@ class RequestResourceIT {
     private static final UUID USER_3_ID = UUID.fromString("5b8bfe7e-7651-4d39-a70c-22c997e376b1");
 
     @Autowired
-    WebApplicationContext context;
+    MockMvc mvc;
+
     @Autowired
     RelationRepository relationRepository;
     @Autowired
@@ -52,20 +55,17 @@ class RequestResourceIT {
 
     @MockBean
     UserServiceClient userServiceClient;
-
-    MockMvc mvc;
+    @MockBean
+    EventServiceClient eventServiceClient;
 
     @BeforeEach
     void setup() {
-        mvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-
         Request requestOneTwo = TestRequest.defaultBuilder()
                 .id(null)
                 .requesterId(USER_1_ID)
                 .recipientId(USER_2_ID)
                 .build().toParent();
 
-        requestRepository.deleteAll();
         requestRepository.save(requestOneTwo);
 
         Relation relationTwoThree = TestRelation.defaultBuilder()
@@ -79,11 +79,18 @@ class RequestResourceIT {
                 .secondUserId(USER_2_ID)
                 .build().toParent();
 
-        relationRepository.deleteAll();
         relationRepository.save(relationTwoThree);
         relationRepository.save(relationThreeTwo);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
+        doNothing().when(eventServiceClient).addContactEvent(any());
+        doNothing().when(eventServiceClient).deleteContactEvents(any());
+    }
+
+    @AfterEach
+    void cleanup() {
+        relationRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 
     @Test

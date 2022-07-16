@@ -7,6 +7,7 @@ import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,6 @@ class CheckControllerIT {
 
     @BeforeEach
     void setup() {
-        relationRepository.deleteAll();
-        requestRepository.deleteAll();
-
         Relation relationOneTwo = TestRelation.defaultBuilder()
                 .id(null)
                 .firstUserId(USER_1_ID)
@@ -60,6 +58,12 @@ class CheckControllerIT {
 
         relationRepository.save(relationOneTwo);
         relationRepository.save(relationTwoOne);
+    }
+
+    @AfterEach
+    void cleanup() {
+        relationRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 
     @Test

@@ -10,6 +10,7 @@ import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.ContactInfoDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +48,6 @@ class InfoControllerIT {
 
     @BeforeEach
     void setup() {
-        relationRepository.deleteAll();
-        requestRepository.deleteAll();
-
         Relation relationOneTwo = TestRelation.defaultBuilder()
                 .id(null)
                 .firstUserId(USER_1_ID)
@@ -78,6 +76,12 @@ class InfoControllerIT {
 
         requestRepository.save(requestOneThree);
         requestRepository.save(requestFourOne);
+    }
+
+    @AfterEach
+    void cleanup() {
+        relationRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 
     @Test

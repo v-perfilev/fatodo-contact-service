@@ -2,6 +2,7 @@ package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.repository.RelationRepository;
+import com.persoff68.fatodo.service.client.EventService;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class RelationService {
 
     private final RelationRepository relationRepository;
+    private final EventService eventService;
 
     public List<Relation> getRelationsByUser(UUID id) {
         return relationRepository.findAllByFirstUserId(id);
@@ -46,6 +48,7 @@ public class RelationService {
             throw new ModelNotFoundException();
         }
         relationRepository.deleteAll(relationList);
+        eventService.deleteContactEventsForUserEvents(firstUserId, secondUserId);
     }
 
 

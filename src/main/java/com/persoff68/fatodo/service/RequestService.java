@@ -4,6 +4,7 @@ import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.model.Message;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RequestRepository;
+import com.persoff68.fatodo.service.client.EventService;
 import com.persoff68.fatodo.service.exception.ModelInvalidException;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import com.persoff68.fatodo.service.exception.RelationAlreadyExistsException;
@@ -22,6 +23,7 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private final RelationService relationService;
     private final CheckService checkService;
+    private final EventService eventService;
     private final ChatServiceClient chatServiceClient;
 
     public List<Request> getAllOutcoming(UUID userId) {
@@ -55,19 +57,26 @@ public class RequestService {
             messageToSend.setText(message);
             chatServiceClient.sendDirect(recipientId, messageToSend);
         }
+        eventService.sendContactSendEvent(requesterId, recipientId);
     }
 
     @Transactional
     public void accept(UUID requesterId, UUID recipientId) {
-        this.remove(requesterId, recipientId);
+        Request request = requestRepository
+                .findByRequesterIdAndRecipientId(requesterId, recipientId)
+                .orElseThrow(ModelNotFoundException::new);
+        requestRepository.delete(request);
         relationService.addForUsers(requesterId, recipientId);
+        eventService.sendContactAcceptEvent(requesterId, recipientId);
     }
 
+    @Transactional
     public void remove(UUID requesterId, UUID recipientId) {
         Request request = requestRepository
                 .findByRequesterIdAndRecipientId(requesterId, recipientId)
                 .orElseThrow(ModelNotFoundException::new);
         requestRepository.delete(request);
+        eventService.deleteContactEventsForUserEvents(requesterId, recipientId);
     }
 
 }

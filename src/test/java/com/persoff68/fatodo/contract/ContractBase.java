@@ -3,12 +3,14 @@ package com.persoff68.fatodo.contract;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
 import com.persoff68.fatodo.client.ChatServiceClient;
+import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,13 +43,12 @@ public abstract class ContractBase {
     UserServiceClient userServiceClient;
     @MockBean
     ChatServiceClient chatServiceClient;
+    @MockBean
+    EventServiceClient eventServiceClient;
 
     @BeforeEach
     public void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
-
-        requestRepository.deleteAll();
-        relationRepository.deleteAll();
 
         Request requestOneTwo = TestRequest.defaultBuilder()
                 .id(null)
@@ -94,6 +95,14 @@ public abstract class ContractBase {
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
         doNothing().when(chatServiceClient).sendDirect(any(), any());
+        doNothing().when(eventServiceClient).addContactEvent(any());
+        doNothing().when(eventServiceClient).deleteContactEvents(any());
+    }
+
+    @AfterEach
+    void cleanup() {
+        relationRepository.deleteAll();
+        requestRepository.deleteAll();
     }
 
 }
