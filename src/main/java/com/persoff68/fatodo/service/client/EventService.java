@@ -22,7 +22,7 @@ public class EventService {
     }
 
     public void sendContactAcceptEvent(UUID firstUserId, UUID secondUserId) {
-        CreateContactEventDTO dto = CreateContactEventDTO.contactSend(firstUserId, secondUserId);
+        CreateContactEventDTO dto = CreateContactEventDTO.contactAccept(firstUserId, secondUserId);
         eventServiceClient.addContactEvent(dto);
     }
 

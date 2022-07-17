@@ -1,6 +1,5 @@
 package com.persoff68.fatodo.client;
 
-import com.persoff68.fatodo.client.configuration.FeignAuthConfiguration;
 import com.persoff68.fatodo.client.configuration.FeignSystemConfiguration;
 import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
 import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
