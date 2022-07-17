@@ -1,5 +1,6 @@
 package com.persoff68.fatodo.contract;
 
+import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.model.Message;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ class ChatServiceCT {
     ChatServiceClient chatServiceClient;
 
     @Test
+    @WithCustomSecurityContext
     void sendDirect() {
         Message message = new Message();
         message.setText("test");
