@@ -1,5 +1,6 @@
 package com.persoff68.fatodo.client;
 
+import com.persoff68.fatodo.client.configuration.FeignAuthConfiguration;
 import com.persoff68.fatodo.model.Message;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.UUID;
 
-@FeignClient(name = "chat-service", primary = false, qualifiers = {"feignChatServiceClient"})
+@FeignClient(name = "chat-service", primary = false,
+        configuration = {FeignAuthConfiguration.class},
+        qualifiers = {"feignChatServiceClient"})
 public interface ChatServiceClient {
 
     @PostMapping(value = "/api/messages/direct/{recipientId}")

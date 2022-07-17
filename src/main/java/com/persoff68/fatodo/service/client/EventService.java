@@ -4,12 +4,14 @@ import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
 import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Async
 public class EventService {
 
     private final EventServiceClient eventServiceClient;
