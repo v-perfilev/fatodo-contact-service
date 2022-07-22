@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(RelationResource.ENDPOINT)
+@RequestMapping(RelationController.ENDPOINT)
 @RequiredArgsConstructor
-public class RelationResource {
-    static final String ENDPOINT = "/api/relations";
+public class RelationController {
+    static final String ENDPOINT = "/api/relation";
 
     private final RelationService relationService;
     private final RelationMapper relationMapper;

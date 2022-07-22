@@ -1,17 +1,13 @@
-package contracts.relationresource
+package contracts.relationcontroller
 
 import org.springframework.cloud.contract.spec.Contract
 
 Contract.make {
-    name 'get all common relation with user'
+    name 'get all relation for user'
     description 'should return status 200 and list of RelationDTOs'
     request {
         method GET()
-        url("/api/relations")
-        url($(
-                consumer(regex("/api/relations/" + uuid().toString() + "/user")),
-                producer("/api/relations/0554562b-1ef5-4311-9462-6aa3c40b5627/user")
-        ))
+        url("/api/relation")
         headers {
             header 'Authorization': $(
                     consumer(containing("Bearer")),

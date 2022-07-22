@@ -6,10 +6,10 @@ Contract.make {
     name 'decline request from user by id'
     description 'should return status 200'
     request {
-        method GET()
+        method PUT()
         url($(
-                consumer(regex("/api/requests/accept/" + uuid().toString())),
-                producer("/api/requests/accept/5b8bfe7e-7651-4d39-a70c-22c997e376b1")
+                consumer(regex("/api/request/" + uuid().toString() + "/accept")),
+                producer("/api/request/5b8bfe7e-7651-4d39-a70c-22c997e376b1/accept")
         ))
         headers {
             header 'Authorization': $(

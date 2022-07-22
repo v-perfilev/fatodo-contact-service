@@ -6,10 +6,10 @@ Contract.make {
     name 'delete request from user by id'
     description 'should return status 200'
     request {
-        method GET()
+        method DELETE()
         url($(
-                consumer(regex("/api/requests/remove/" + uuid().toString())),
-                producer("/api/requests/remove/8d583dfd-acfb-4481-80e6-0b46170e2a18")
+                consumer(regex("/api/request/" + uuid().toString())),
+                producer("/api/request/8d583dfd-acfb-4481-80e6-0b46170e2a18")
         ))
         headers {
             header 'Authorization': $(

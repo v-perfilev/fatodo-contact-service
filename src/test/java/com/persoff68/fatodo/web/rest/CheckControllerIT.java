@@ -13,16 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = FatodoContactServiceApplication.class)
@@ -69,11 +67,8 @@ class CheckControllerIT {
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     void testAreUsersInContactList_true() throws Exception {
-        String url = ENDPOINT + "/contacts";
-        List<UUID> userIdList = List.of(USER_2_ID);
-        String requestBody = objectMapper.writeValueAsString(userIdList);
-        ResultActions resultActions = mvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        String url = ENDPOINT + "/contact?ids=" + USER_2_ID;
+        ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         boolean result = objectMapper.readValue(resultString, Boolean.class);
@@ -83,11 +78,9 @@ class CheckControllerIT {
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     void testAreUsersInContactList_false_1() throws Exception {
-        String url = ENDPOINT + "/contacts";
-        List<UUID> userIdList = List.of(USER_2_ID, UUID.randomUUID());
-        String requestBody = objectMapper.writeValueAsString(userIdList);
-        ResultActions resultActions = mvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        String param = String.join(",", USER_2_ID.toString(), UUID.randomUUID().toString());
+        String url = ENDPOINT + "/contact?ids=" + param;
+        ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         boolean result = objectMapper.readValue(resultString, Boolean.class);
@@ -97,11 +90,8 @@ class CheckControllerIT {
     @Test
     @WithCustomSecurityContext(id = "98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d")
     void testAreUsersInContactList_false_2() throws Exception {
-        String url = ENDPOINT + "/contacts";
-        List<UUID> userIdList = List.of(UUID.randomUUID());
-        String requestBody = objectMapper.writeValueAsString(userIdList);
-        ResultActions resultActions = mvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        String url = ENDPOINT + "/contact?ids=" + UUID.randomUUID();
+        ResultActions resultActions = mvc.perform(get(url))
                 .andExpect(status().isOk());
         String resultString = resultActions.andReturn().getResponse().getContentAsString();
         boolean result = objectMapper.readValue(resultString, Boolean.class);
@@ -111,11 +101,8 @@ class CheckControllerIT {
     @Test
     @WithAnonymousUser
     void testGetInfo_unauthorized() throws Exception {
-        String url = ENDPOINT + "/contacts";
-        List<UUID> userIdList = List.of(USER_2_ID, UUID.randomUUID());
-        String requestBody = objectMapper.writeValueAsString(userIdList);
-        mvc.perform(post(url)
-                        .contentType(MediaType.APPLICATION_JSON).content(requestBody))
+        String url = ENDPOINT + "/contact?ids=" + USER_2_ID;
+        mvc.perform(get(url))
                 .andExpect(status().isUnauthorized());
     }
 

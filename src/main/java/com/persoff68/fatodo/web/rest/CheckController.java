@@ -5,9 +5,9 @@ import com.persoff68.fatodo.security.util.SecurityUtils;
 import com.persoff68.fatodo.service.CheckService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,8 +21,8 @@ public class CheckController {
 
     private final CheckService checkService;
 
-    @PostMapping("/contacts")
-    public ResponseEntity<Boolean> areUsersInContactList(@RequestBody List<UUID> userIdList) {
+    @GetMapping("/contact")
+    public ResponseEntity<Boolean> areUsersInContactList(@RequestParam("ids") List<UUID> userIdList) {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);
         boolean areUsersInContactList = checkService.areUsersInContactList(userId, userIdList);
