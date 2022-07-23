@@ -21,12 +21,11 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMessageVerifier
-public abstract class ContractBase {
+class ContractBase {
     private static final UUID USER_1_ID = UUID.fromString("8f9a7cae-73c8-4ad6-b135-5bd109b51d2e");
     private static final UUID USER_2_ID = UUID.fromString("8d583dfd-acfb-4481-80e6-0b46170e2a18");
     private static final UUID USER_3_ID = UUID.fromString("5b8bfe7e-7651-4d39-a70c-22c997e376b1");
@@ -47,7 +46,7 @@ public abstract class ContractBase {
     EventServiceClient eventServiceClient;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         RestAssuredMockMvc.webAppContextSetup(context);
 
         Request requestOneTwo = TestRequest.defaultBuilder()
@@ -94,9 +93,6 @@ public abstract class ContractBase {
         relationRepository.save(relationFourFive);
 
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
-        doNothing().when(chatServiceClient).sendDirect(any(), any());
-        doNothing().when(eventServiceClient).addContactEvent(any());
-        doNothing().when(eventServiceClient).deleteContactEvents(any());
     }
 
     @AfterEach
