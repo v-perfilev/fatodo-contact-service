@@ -14,7 +14,7 @@ import java.util.UUID;
         qualifiers = {"feignChatServiceClient"})
 public interface ChatServiceClient {
 
-    @PostMapping(value = "/api/messages/direct/{recipientId}")
+    @PostMapping(value = "/api/message/{recipientId}/direct")
     void sendDirect(@PathVariable UUID recipientId, @RequestBody Message message);
 
 }

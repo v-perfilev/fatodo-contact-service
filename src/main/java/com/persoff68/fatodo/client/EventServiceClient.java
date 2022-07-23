@@ -4,7 +4,6 @@ import com.persoff68.fatodo.client.configuration.FeignSystemConfiguration;
 import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
 import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
         qualifiers = {"feignEventServiceClient"})
 public interface EventServiceClient {
 
-    @PostMapping(value = "/api/events/contact", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/event/contact")
     void addContactEvent(@RequestBody CreateContactEventDTO createContactEventDTO);
 
-    @PostMapping(value = "/api/events/contact/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/api/event/contact/delete")
     void deleteContactEvents(@RequestBody DeleteContactEventsDTO deleteContactEventsDTO);
 
 }
