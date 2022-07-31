@@ -6,6 +6,7 @@ import com.persoff68.fatodo.FatodoContactServiceApplication;
 import com.persoff68.fatodo.annotation.WithCustomSecurityContext;
 import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.client.EventServiceClient;
+import com.persoff68.fatodo.client.WsServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.dto.RelationDTO;
 import com.persoff68.fatodo.repository.RelationRepository;
@@ -50,6 +51,8 @@ class RelationControllerIT {
 
     @MockBean
     EventServiceClient eventServiceClient;
+    @MockBean
+    WsServiceClient wsServiceClient;
 
     @BeforeEach
     void setup() {

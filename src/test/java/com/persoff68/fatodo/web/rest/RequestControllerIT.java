@@ -10,6 +10,7 @@ import com.persoff68.fatodo.builder.TestRequestVM;
 import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
+import com.persoff68.fatodo.client.WsServiceClient;
 import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.dto.RequestDTO;
@@ -64,6 +65,8 @@ class RequestControllerIT {
     ChatServiceClient chatServiceClient;
     @MockBean
     EventServiceClient eventServiceClient;
+    @MockBean
+    WsServiceClient wsServiceClient;
 
     @BeforeEach
     void setup() {

@@ -1,13 +1,16 @@
 package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.Relation;
+import com.persoff68.fatodo.model.dto.constant.ClearEventType;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.service.client.EventService;
+import com.persoff68.fatodo.service.client.WsService;
 import com.persoff68.fatodo.service.exception.ModelNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +20,7 @@ public class RelationService {
 
     private final RelationRepository relationRepository;
     private final EventService eventService;
+    private final WsService wsService;
 
     public List<Relation> getRelationsByUser(UUID id) {
         return relationRepository.findAllByFirstUserId(id);
@@ -49,6 +53,10 @@ public class RelationService {
         }
         relationRepository.deleteAll(relationList);
         eventService.deleteContactEventsForUserEvents(firstUserId, secondUserId);
+
+        // WS
+        wsService.sendClearEvent(ClearEventType.RELATION, firstUserId, Collections.singletonList(secondUserId));
+        wsService.sendClearEvent(ClearEventType.RELATION, secondUserId, Collections.singletonList(firstUserId));
     }
 
 
