@@ -1,7 +1,6 @@
 package com.persoff68.fatodo.service;
 
 import com.persoff68.fatodo.model.Relation;
-import com.persoff68.fatodo.model.dto.constant.ClearEventType;
 import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.service.client.EventService;
 import com.persoff68.fatodo.service.client.WsService;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,8 +53,8 @@ public class RelationService {
         eventService.deleteContactEventsForUserEvents(firstUserId, secondUserId);
 
         // WS
-        wsService.sendClearEvent(ClearEventType.RELATION, firstUserId, Collections.singletonList(secondUserId));
-        wsService.sendClearEvent(ClearEventType.RELATION, secondUserId, Collections.singletonList(firstUserId));
+        wsService.sendDeleteRelationEvent(firstUserId, secondUserId);
+        wsService.sendDeleteRelationEvent(secondUserId, firstUserId);
     }
 
 

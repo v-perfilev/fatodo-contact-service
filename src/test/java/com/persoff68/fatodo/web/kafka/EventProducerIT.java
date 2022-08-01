@@ -94,7 +94,7 @@ class EventProducerIT {
     void testSendContactEvent_ok() throws Exception {
         requestService.accept(USER_1_ID, USER_2_ID);
 
-        ConsumerRecord<String, String> record = eventAddRecords.poll(10, TimeUnit.SECONDS);
+        ConsumerRecord<String, String> record = eventAddRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(eventServiceClient).isInstanceOf(EventProducer.class);
         assertThat(record).isNotNull();
@@ -106,7 +106,7 @@ class EventProducerIT {
     void testSendDeleteContactEvents_ok() throws Exception {
         requestService.remove(USER_1_ID, USER_2_ID);
 
-        ConsumerRecord<String, String> record = eventDeleteRecords.poll(10, TimeUnit.SECONDS);
+        ConsumerRecord<String, String> record = eventDeleteRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(eventServiceClient).isInstanceOf(EventProducer.class);
         assertThat(record).isNotNull();

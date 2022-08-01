@@ -3,7 +3,6 @@ package com.persoff68.fatodo.service;
 import com.persoff68.fatodo.client.ChatServiceClient;
 import com.persoff68.fatodo.model.Message;
 import com.persoff68.fatodo.model.Request;
-import com.persoff68.fatodo.model.dto.constant.ClearEventType;
 import com.persoff68.fatodo.repository.RequestRepository;
 import com.persoff68.fatodo.service.client.EventService;
 import com.persoff68.fatodo.service.client.WsService;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -91,8 +89,8 @@ public class RequestService {
         eventService.deleteContactEventsForUserEvents(requesterId, recipientId);
 
         // WS
-        wsService.sendClearEvent(ClearEventType.INCOMING_REQUEST, recipientId, Collections.singletonList(requesterId));
-        wsService.sendClearEvent(ClearEventType.OUTCOMING_REQUEST, requesterId, Collections.singletonList(recipientId));
+        wsService.sendDeleteRequestIncomingEvent(requesterId, recipientId);
+        wsService.sendDeleteRequestOutcomingEvent(requesterId, recipientId);
     }
 
 }

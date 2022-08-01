@@ -3,10 +3,8 @@ package com.persoff68.fatodo.config;
 import com.persoff68.fatodo.config.annotation.ConditionalOnPropertyNotNull;
 import com.persoff68.fatodo.config.constant.KafkaTopics;
 import com.persoff68.fatodo.config.util.KafkaUtils;
-import com.persoff68.fatodo.model.dto.ClearEventDTO;
 import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
 import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
-import com.persoff68.fatodo.model.dto.RequestEventDTO;
 import com.persoff68.fatodo.model.dto.WsEventDTO;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
+
+import java.util.UUID;
 
 @Configuration
 @EnableKafka
@@ -43,11 +43,6 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic wsClearNewTopic() {
-        return KafkaUtils.buildTopic(KafkaTopics.WS_CLEAR.getValue(), partitions);
-    }
-
-    @Bean
     public NewTopic wsContactNewTopic() {
         return KafkaUtils.buildTopic(KafkaTopics.WS_CONTACT.getValue(), partitions);
     }
@@ -63,12 +58,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, WsEventDTO<ClearEventDTO>> wsClearEventKafkaTemplate() {
-        return KafkaUtils.buildJsonKafkaTemplate(bootstrapAddress);
-    }
-
-    @Bean
-    public KafkaTemplate<String, WsEventDTO<RequestEventDTO>> wsContactEventKafkaTemplate() {
+    public KafkaTemplate<String, WsEventDTO<UUID>> wsContactEventKafkaTemplate() {
         return KafkaUtils.buildJsonKafkaTemplate(bootstrapAddress);
     }
 

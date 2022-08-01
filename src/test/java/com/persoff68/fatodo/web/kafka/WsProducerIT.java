@@ -1,12 +1,16 @@
 package com.persoff68.fatodo.web.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.persoff68.fatodo.builder.TestRelation;
 import com.persoff68.fatodo.builder.TestRequest;
 import com.persoff68.fatodo.client.UserServiceClient;
 import com.persoff68.fatodo.client.WsServiceClient;
 import com.persoff68.fatodo.config.util.KafkaUtils;
+import com.persoff68.fatodo.model.Relation;
 import com.persoff68.fatodo.model.Request;
+import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import com.persoff68.fatodo.service.RelationService;
 import com.persoff68.fatodo.service.RequestService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.AfterEach;
@@ -48,6 +52,7 @@ class WsProducerIT {
     private static final UUID USER_ID_1 = UUID.randomUUID();
     private static final UUID USER_ID_2 = UUID.randomUUID();
     private static final UUID USER_ID_3 = UUID.randomUUID();
+    private static final UUID USER_ID_4 = UUID.randomUUID();
 
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
@@ -57,7 +62,12 @@ class WsProducerIT {
     @Autowired
     RequestService requestService;
     @Autowired
+    RelationService relationService;
+    @Autowired
     RequestRepository requestRepository;
+    @Autowired
+    RelationRepository relationRepository;
+
 
     @MockBean
     UserServiceClient userServiceClient;
@@ -68,13 +78,24 @@ class WsProducerIT {
 
     private ConcurrentMessageListenerContainer<String, String> wsContactContainer;
     private BlockingQueue<ConsumerRecord<String, String>> wsContactRecords;
-    private ConcurrentMessageListenerContainer<String, String> wsClearContainer;
-    private BlockingQueue<ConsumerRecord<String, String>> wsClearRecords;
 
 
     @BeforeEach
     void setup() {
         when(userServiceClient.doesIdExist(any())).thenReturn(true);
+
+        Relation relationOneFour = TestRelation.defaultBuilder()
+                .id(null)
+                .firstUserId(USER_ID_1)
+                .secondUserId(USER_ID_4)
+                .build().toParent();
+        Relation relationFourOne = TestRelation.defaultBuilder()
+                .id(null)
+                .firstUserId(USER_ID_4)
+                .secondUserId(USER_ID_1)
+                .build().toParent();
+        relationRepository.save(relationOneFour);
+        relationRepository.save(relationFourOne);
 
         Request requestOneTwo = TestRequest.defaultBuilder()
                 .requesterId(USER_ID_1)
@@ -83,7 +104,6 @@ class WsProducerIT {
         requestRepository.save(requestOneTwo);
 
         startWsContactConsumer();
-        startWsClearConsumer();
     }
 
     @AfterEach
@@ -91,14 +111,13 @@ class WsProducerIT {
         requestRepository.deleteAll();
 
         stopWsContactConsumer();
-        stopWsClearConsumer();
     }
 
     @Test
     void testSendContactRequestEvent() throws Exception {
         requestService.send(USER_ID_1, USER_ID_3, null);
 
-        ConsumerRecord<String, String> record = wsContactRecords.poll(10, TimeUnit.SECONDS);
+        ConsumerRecord<String, String> record = wsContactRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(wsServiceClient).isInstanceOf(WsProducer.class);
         assertThat(record).isNotNull();
@@ -119,14 +138,26 @@ class WsProducerIT {
     }
 
     @Test
-    void testSendClearEvent() throws Exception {
+    void testSendDeleteRequestEvent() throws Exception {
         requestService.remove(USER_ID_1, USER_ID_2);
 
-        ConsumerRecord<String, String> record = wsClearRecords.poll(5, TimeUnit.SECONDS);
+        ConsumerRecord<String, String> record = wsContactRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(wsServiceClient).isInstanceOf(WsProducer.class);
         assertThat(record).isNotNull();
-        verify(wsServiceClient, times(2)).sendClearEvent(any());
+        verify(wsServiceClient, times(1)).sendDeleteRequestIncomingEvent(any());
+        verify(wsServiceClient, times(1)).sendDeleteRequestOutcomingEvent(any());
+    }
+
+    @Test
+    void testSendDeleteRelationEvent() throws Exception {
+        relationService.deleteByUsers(USER_ID_1, USER_ID_4);
+
+        ConsumerRecord<String, String> record = wsContactRecords.poll(5, TimeUnit.SECONDS);
+
+        assertThat(wsServiceClient).isInstanceOf(WsProducer.class);
+        assertThat(record).isNotNull();
+        verify(wsServiceClient, times(2)).sendDeleteRelationEvent(any());
     }
 
 
@@ -144,18 +175,5 @@ class WsProducerIT {
         wsContactContainer.stop();
     }
 
-    private void startWsClearConsumer() {
-        ConcurrentKafkaListenerContainerFactory<String, String> stringContainerFactory =
-                KafkaUtils.buildStringContainerFactory(embeddedKafkaBroker.getBrokersAsString(), "test", "earliest");
-        wsClearContainer = stringContainerFactory.createContainer("ws_clear");
-        wsClearRecords = new LinkedBlockingQueue<>();
-        wsClearContainer.setupMessageListener((MessageListener<String, String>) wsClearRecords::add);
-        wsClearContainer.start();
-        ContainerTestUtils.waitForAssignment(wsClearContainer, embeddedKafkaBroker.getPartitionsPerTopic());
-    }
-
-    private void stopWsClearConsumer() {
-        wsClearContainer.stop();
-    }
 
 }
