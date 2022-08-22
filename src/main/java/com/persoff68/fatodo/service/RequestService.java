@@ -53,17 +53,19 @@ public class RequestService {
             throw new RequestAlreadyExistsException();
         }
         Request request = new Request(requesterId, recipientId, message);
-        requestRepository.save(request);
+        request = requestRepository.save(request);
         if (message != null && !message.isBlank()) {
             Message messageToSend = new Message();
             messageToSend.setText(message);
             chatServiceClient.sendDirect(recipientId, messageToSend);
         }
+
+        // EVENT
         eventService.sendContactSendEvent(requesterId, recipientId);
 
         // WS
-        wsService.sendRequestIncomingEvent(requesterId, recipientId);
-        wsService.sendRequestOutcomingEvent(requesterId, recipientId);
+        wsService.sendRequestIncomingEvent(request);
+        wsService.sendRequestOutcomingEvent(request);
     }
 
     @Transactional
@@ -76,8 +78,8 @@ public class RequestService {
         eventService.sendContactAcceptEvent(requesterId, recipientId);
 
         // WS
-        wsService.sendAcceptIncomingEvent(requesterId, recipientId);
-        wsService.sendAcceptOutcomingEvent(requesterId, recipientId);
+        wsService.sendAcceptIncomingEvent(request);
+        wsService.sendAcceptOutcomingEvent(request);
     }
 
     @Transactional
@@ -89,8 +91,8 @@ public class RequestService {
         eventService.deleteContactEventsForUserEvents(requesterId, recipientId);
 
         // WS
-        wsService.sendDeleteRequestIncomingEvent(requesterId, recipientId);
-        wsService.sendDeleteRequestOutcomingEvent(requesterId, recipientId);
+        wsService.sendDeleteIncomingEvent(request);
+        wsService.sendDeleteRequestOutcomingEvent(request);
     }
 
 }

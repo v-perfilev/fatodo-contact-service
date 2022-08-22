@@ -5,7 +5,7 @@ import com.persoff68.fatodo.config.constant.KafkaTopics;
 import com.persoff68.fatodo.config.util.KafkaUtils;
 import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
 import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
-import com.persoff68.fatodo.model.dto.WsEventDTO;
+import com.persoff68.fatodo.model.dto.WsEventWithUsersDTO;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
-
-import java.util.UUID;
 
 @Configuration
 @EnableKafka
@@ -43,8 +41,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic wsContactNewTopic() {
-        return KafkaUtils.buildTopic(KafkaTopics.WS_CONTACT.getValue(), partitions);
+    public NewTopic wsNewTopic() {
+        return KafkaUtils.buildTopic(KafkaTopics.WS.getValue(), partitions);
     }
 
     @Bean
@@ -58,7 +56,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, WsEventDTO<UUID>> wsContactEventKafkaTemplate() {
+    public KafkaTemplate<String, WsEventWithUsersDTO> wsKafkaTemplate() {
         return KafkaUtils.buildJsonKafkaTemplate(bootstrapAddress);
     }
 

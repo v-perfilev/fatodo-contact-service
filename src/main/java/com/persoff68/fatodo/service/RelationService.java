@@ -53,8 +53,7 @@ public class RelationService {
         eventService.deleteContactEventsForUserEvents(firstUserId, secondUserId);
 
         // WS
-        wsService.sendDeleteRelationEvent(firstUserId, secondUserId);
-        wsService.sendDeleteRelationEvent(secondUserId, firstUserId);
+        relationList.forEach(wsService::sendDeleteRelationEvent);
     }
 
 

@@ -1,9 +1,15 @@
 package com.persoff68.fatodo.service.client;
 
 import com.persoff68.fatodo.client.WsServiceClient;
-import com.persoff68.fatodo.model.dto.WsEventDTO;
+import com.persoff68.fatodo.mapper.RelationMapper;
+import com.persoff68.fatodo.mapper.RequestMapper;
+import com.persoff68.fatodo.model.Relation;
+import com.persoff68.fatodo.model.Request;
+import com.persoff68.fatodo.model.constant.WsEventType;
+import com.persoff68.fatodo.model.dto.RelationDTO;
+import com.persoff68.fatodo.model.dto.RequestDTO;
+import com.persoff68.fatodo.model.dto.WsEventWithUsersDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,83 +23,63 @@ import java.util.UUID;
 public class WsService {
 
     private final WsServiceClient wsServiceClient;
+    private final RequestMapper requestMapper;
+    private final RelationMapper relationMapper;
 
-    public void sendRequestIncomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(recipientId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, requesterId);
-        sendRequestIncomingEventAsync(eventDTO);
+    public void sendRequestIncomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_REQUEST_INCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendRequestOutcomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(requesterId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, recipientId);
-        sendRequestOutcomingEventAsync(eventDTO);
+    public void sendRequestOutcomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRequesterId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_REQUEST_OUTCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendAcceptIncomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(recipientId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, requesterId);
-        sendAcceptIncomingEventAsync(eventDTO);
+    public void sendAcceptIncomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_ACCEPT_INCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendAcceptOutcomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(requesterId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, recipientId);
-        sendAcceptOutcomingEventAsync(eventDTO);
+    public void sendAcceptOutcomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRequesterId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_ACCEPT_OUTCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendDeleteRequestIncomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(recipientId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, requesterId);
-        sendDeleteRequestIncomingEventAsync(eventDTO);
+    public void sendDeleteIncomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_DELETE_INCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendDeleteRequestOutcomingEvent(UUID requesterId, UUID recipientId) {
-        List<UUID> userIdList = Collections.singletonList(requesterId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, recipientId);
-        sendDeleteRequestOutcomingEventAsync(eventDTO);
+    public void sendDeleteRequestOutcomingEvent(Request request) {
+        List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
+        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_DELETE_OUTCOMING, requestDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
-    public void sendDeleteRelationEvent(UUID firstUserId, UUID secondUserId) {
-        List<UUID> userIdList = Collections.singletonList(firstUserId);
-        WsEventDTO<UUID> eventDTO = new WsEventDTO<>(userIdList, secondUserId);
-        sendDeleteRelationEventAsync(eventDTO);
-    }
-
-
-    @Async
-    public void sendRequestIncomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendRequestIncomingEvent(event);
-    }
-
-    @Async
-    public void sendRequestOutcomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendRequestOutcomingEvent(event);
-    }
-
-    @Async
-    public void sendAcceptIncomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendAcceptIncomingEvent(event);
-    }
-
-    @Async
-    public void sendAcceptOutcomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendAcceptOutcomingEvent(event);
-    }
-
-    @Async
-    public void sendDeleteRequestIncomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendDeleteRequestIncomingEvent(event);
-    }
-
-    @Async
-    public void sendDeleteRequestOutcomingEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendDeleteRequestOutcomingEvent(event);
-    }
-
-    @Async
-    public void sendDeleteRelationEventAsync(WsEventDTO<UUID> event) {
-        wsServiceClient.sendDeleteRelationEvent(event);
+    public void sendDeleteRelationEvent(Relation relation) {
+        List<UUID> userIdList = Collections.singletonList(relation.getFirstUserId());
+        RelationDTO relationDTO = relationMapper.pojoToDTO(relation);
+        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+                WsEventType.CONTACT_DELETE, relationDTO);
+        wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
 
 }
