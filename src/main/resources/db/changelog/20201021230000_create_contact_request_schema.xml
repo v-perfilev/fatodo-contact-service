@@ -20,9 +20,9 @@
             <column name="message" type="varchar(255)"/>
 
             <column name="created_by" type="binary(16)"/>
-            <column name="created_at" type="timestamp"/>
+            <column name="created_at" type="datetime"/>
             <column name="last_modified_by" type="binary(16)"/>
-            <column name="last_modified_at" type="timestamp"/>
+            <column name="last_modified_at" type="datetime"/>
         </createTable>
 
         <createIndex indexName="index_contact_request_requester" tableName="ftd_contact_request">
