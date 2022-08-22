@@ -8,7 +8,7 @@ import com.persoff68.fatodo.model.Request;
 import com.persoff68.fatodo.model.constant.WsEventType;
 import com.persoff68.fatodo.model.dto.RelationDTO;
 import com.persoff68.fatodo.model.dto.RequestDTO;
-import com.persoff68.fatodo.model.dto.WsEventWithUsersDTO;
+import com.persoff68.fatodo.model.dto.WsEventDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ public class WsService {
     public void sendRequestIncomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_REQUEST_INCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -37,7 +37,7 @@ public class WsService {
     public void sendRequestOutcomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRequesterId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_REQUEST_OUTCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -45,7 +45,7 @@ public class WsService {
     public void sendAcceptIncomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_ACCEPT_INCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -53,7 +53,7 @@ public class WsService {
     public void sendAcceptOutcomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRequesterId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_ACCEPT_OUTCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -61,7 +61,7 @@ public class WsService {
     public void sendDeleteIncomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_DELETE_INCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -69,7 +69,7 @@ public class WsService {
     public void sendDeleteRequestOutcomingEvent(Request request) {
         List<UUID> userIdList = Collections.singletonList(request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_DELETE_OUTCOMING, requestDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
@@ -77,7 +77,7 @@ public class WsService {
     public void sendDeleteRelationEvent(Relation relation) {
         List<UUID> userIdList = Collections.singletonList(relation.getFirstUserId());
         RelationDTO relationDTO = relationMapper.pojoToDTO(relation);
-        WsEventWithUsersDTO wsEventWithUsersDTO = new WsEventWithUsersDTO(userIdList,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList,
                 WsEventType.CONTACT_DELETE, relationDTO);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }
