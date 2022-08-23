@@ -1,12 +1,17 @@
 package com.persoff68.fatodo.web.kafka;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.persoff68.fatodo.builder.TestRequest;
 import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.client.UserServiceClient;
+import com.persoff68.fatodo.client.WsServiceClient;
 import com.persoff68.fatodo.config.util.KafkaUtils;
 import com.persoff68.fatodo.model.Request;
+import com.persoff68.fatodo.model.dto.EventDTO;
+import com.persoff68.fatodo.repository.RelationRepository;
 import com.persoff68.fatodo.repository.RequestRepository;
+import com.persoff68.fatodo.service.RelationService;
 import com.persoff68.fatodo.service.RequestService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.AfterEach;
@@ -31,7 +36,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {
         "kafka.bootstrapAddress=localhost:9092",
@@ -43,105 +50,83 @@ import static org.mockito.Mockito.verify;
 @EmbeddedKafka(partitions = 1, brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
 class EventProducerIT {
 
-    private static final UUID USER_1_ID = UUID.fromString("98a4f736-70c2-4c7d-b75b-f7a5ae7bbe8d");
-    private static final UUID USER_2_ID = UUID.fromString("8d583dfd-acfb-4481-80e6-0b46170e2a18");
+    private static final UUID USER_ID_1 = UUID.randomUUID();
+    private static final UUID USER_ID_2 = UUID.randomUUID();
 
     @Autowired
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @Autowired
+    ObjectMapper objectMapper;
+    @Autowired
     RequestService requestService;
     @Autowired
-    ObjectMapper objectMapper;
-
+    RelationService relationService;
     @Autowired
     RequestRepository requestRepository;
+    @Autowired
+    RelationRepository relationRepository;
+
 
     @MockBean
     UserServiceClient userServiceClient;
+    @MockBean
+    WsServiceClient wsServiceClient;
 
     @SpyBean
     EventServiceClient eventServiceClient;
 
-    private ConcurrentMessageListenerContainer<String, String> eventAddContainer;
-    private BlockingQueue<ConsumerRecord<String, String>> eventAddRecords;
 
-    private ConcurrentMessageListenerContainer<String, String> eventDeleteContainer;
-    private BlockingQueue<ConsumerRecord<String, String>> eventDeleteRecords;
+    private ConcurrentMessageListenerContainer<String, EventDTO> eventContainer;
+    private BlockingQueue<ConsumerRecord<String, EventDTO>> eventRecords;
 
 
     @BeforeEach
     void setup() {
+        when(userServiceClient.doesIdExist(any())).thenReturn(true);
+
         Request requestOneTwo = TestRequest.defaultBuilder()
-                .requesterId(USER_1_ID)
-                .recipientId(USER_2_ID)
+                .requesterId(USER_ID_1)
+                .recipientId(USER_ID_2)
                 .build().toParent();
         requestRepository.save(requestOneTwo);
 
-        startEventAddConsumer();
-        startEventDeleteConsumer();
+        startEventConsumer();
     }
 
     @AfterEach
     void cleanup() {
         requestRepository.deleteAll();
 
-        stopEventAddConsumer();
-        stopEventDeleteConsumer();
+        stopEventConsumer();
     }
 
     @Test
-    void testSendContactEvent_ok() throws Exception {
-        requestService.accept(USER_1_ID, USER_2_ID);
+    void testAndEventEvent() throws Exception {
+        requestService.accept(USER_ID_1, USER_ID_2);
 
-        ConsumerRecord<String, String> record = eventAddRecords.poll(5, TimeUnit.SECONDS);
-
-        assertThat(eventServiceClient).isInstanceOf(EventProducer.class);
-        assertThat(record).isNotNull();
-        assertThat(record.key()).isEqualTo("contact");
-        verify(eventServiceClient).addContactEvent(any());
-    }
-
-    @Test
-    void testSendDeleteContactEvents_ok() throws Exception {
-        requestService.remove(USER_1_ID, USER_2_ID);
-
-        ConsumerRecord<String, String> record = eventDeleteRecords.poll(5, TimeUnit.SECONDS);
+        ConsumerRecord<String, EventDTO> record = eventRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(eventServiceClient).isInstanceOf(EventProducer.class);
         assertThat(record).isNotNull();
-        assertThat(record.key()).isEqualTo("contact-delete");
-        verify(eventServiceClient).deleteContactEvents(any());
+        verify(eventServiceClient, times(2)).addEvent(any());
     }
 
 
-    private void startEventAddConsumer() {
-        ConcurrentKafkaListenerContainerFactory<String, String> stringContainerFactory =
-                KafkaUtils.buildStringContainerFactory(embeddedKafkaBroker.getBrokersAsString(), "test", "earliest");
-        eventAddContainer = stringContainerFactory.createContainer("event_add");
-        eventAddRecords = new LinkedBlockingQueue<>();
-        eventAddContainer.setupMessageListener((MessageListener<String, String>) eventAddRecords::add);
-        eventAddContainer.start();
-        ContainerTestUtils.waitForAssignment(eventAddContainer, embeddedKafkaBroker.getPartitionsPerTopic());
+    private void startEventConsumer() {
+        JavaType javaType = objectMapper.getTypeFactory().constructType(EventDTO.class);
+        ConcurrentKafkaListenerContainerFactory<String, EventDTO> containerFactory =
+                KafkaUtils.buildJsonContainerFactory(embeddedKafkaBroker.getBrokersAsString(),
+                        "test", "earliest", javaType);
+        eventContainer = containerFactory.createContainer("event");
+        eventRecords = new LinkedBlockingQueue<>();
+        eventContainer.setupMessageListener((MessageListener<String, EventDTO>) eventRecords::add);
+        eventContainer.start();
+        ContainerTestUtils.waitForAssignment(eventContainer, embeddedKafkaBroker.getPartitionsPerTopic());
     }
 
-    private void stopEventAddConsumer() {
-        eventAddContainer.stop();
+    private void stopEventConsumer() {
+        eventContainer.stop();
     }
-
-    private void startEventDeleteConsumer() {
-        ConcurrentKafkaListenerContainerFactory<String, String> stringContainerFactory =
-                KafkaUtils.buildStringContainerFactory(embeddedKafkaBroker.getBrokersAsString(), "test", "earliest");
-        eventDeleteContainer = stringContainerFactory.createContainer("event_delete");
-        eventDeleteRecords = new LinkedBlockingQueue<>();
-        eventDeleteContainer.setupMessageListener((MessageListener<String, String>) eventDeleteRecords::add);
-        eventDeleteContainer.start();
-        ContainerTestUtils.waitForAssignment(eventDeleteContainer, embeddedKafkaBroker.getPartitionsPerTopic());
-    }
-
-    private void stopEventDeleteConsumer() {
-        eventDeleteContainer.stop();
-    }
-
 
 }

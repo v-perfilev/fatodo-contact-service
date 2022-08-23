@@ -65,7 +65,7 @@ public class RequestController {
     public ResponseEntity<Void> removeRequest(@PathVariable UUID recipientId) {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);
-        requestService.remove(userId, recipientId);
+        requestService.remove(userId, recipientId, userId);
         return ResponseEntity.ok().build();
     }
 
@@ -81,7 +81,7 @@ public class RequestController {
     public ResponseEntity<Void> declineRequests(@PathVariable UUID requesterId) {
         UUID userId = SecurityUtils.getCurrentId()
                 .orElseThrow(UnauthorizedException::new);
-        requestService.remove(requesterId, userId);
+        requestService.remove(requesterId, userId, userId);
         return ResponseEntity.ok().build();
     }
 

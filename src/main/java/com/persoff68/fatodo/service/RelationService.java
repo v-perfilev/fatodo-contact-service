@@ -50,10 +50,12 @@ public class RelationService {
             throw new ModelNotFoundException();
         }
         relationRepository.deleteAll(relationList);
-        eventService.deleteContactEventsForUserEvents(firstUserId, secondUserId);
+
+        // EVENT
+        eventService.sendDeleteRelationEvent(relationList.get(0), firstUserId);
 
         // WS
-        relationList.forEach(wsService::sendDeleteRelationEvent);
+        wsService.sendDeleteRelationEvent(relationList.get(0), firstUserId);
     }
 
 

@@ -61,7 +61,8 @@ public class RequestService {
         }
 
         // EVENT
-        eventService.sendContactSendEvent(requesterId, recipientId);
+        eventService.sendRequestIncomingEvent(request);
+        eventService.sendRequestOutcomingEvent(request);
 
         // WS
         wsService.sendRequestIncomingEvent(request);
@@ -75,7 +76,10 @@ public class RequestService {
                 .orElseThrow(ModelNotFoundException::new);
         requestRepository.delete(request);
         relationService.addForUsers(requesterId, recipientId);
-        eventService.sendContactAcceptEvent(requesterId, recipientId);
+
+        // EVENT
+        eventService.sendAcceptIncomingEvent(request);
+        eventService.sendAcceptOutcomingEvent(request);
 
         // WS
         wsService.sendAcceptIncomingEvent(request);
@@ -83,16 +87,19 @@ public class RequestService {
     }
 
     @Transactional
-    public void remove(UUID requesterId, UUID recipientId) {
+    public void remove(UUID requesterId, UUID recipientId, UUID userId) {
         Request request = requestRepository
                 .findByRequesterIdAndRecipientId(requesterId, recipientId)
                 .orElseThrow(ModelNotFoundException::new);
         requestRepository.delete(request);
-        eventService.deleteContactEventsForUserEvents(requesterId, recipientId);
+
+        // EVENT
+        eventService.sendDeleteIncomingEvent(request, userId);
+        eventService.sendDeleteOutcomingEvent(request, userId);
 
         // WS
-        wsService.sendDeleteIncomingEvent(request);
-        wsService.sendDeleteRequestOutcomingEvent(request);
+        wsService.sendDeleteIncomingEvent(request, userId);
+        wsService.sendDeleteOutcomingEvent(request, userId);
     }
 
 }

@@ -3,8 +3,7 @@ package com.persoff68.fatodo.web.kafka;
 import com.persoff68.fatodo.client.EventServiceClient;
 import com.persoff68.fatodo.config.annotation.ConditionalOnPropertyNotNull;
 import com.persoff68.fatodo.config.constant.KafkaTopics;
-import com.persoff68.fatodo.model.dto.CreateContactEventDTO;
-import com.persoff68.fatodo.model.dto.DeleteContactEventsDTO;
+import com.persoff68.fatodo.model.dto.EventDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -14,17 +13,11 @@ import org.springframework.stereotype.Component;
 @ConditionalOnPropertyNotNull(value = "kafka.bootstrapAddress")
 public class EventProducer implements EventServiceClient {
 
-    private final KafkaTemplate<String, CreateContactEventDTO> eventContactKafkaTemplate;
-    private final KafkaTemplate<String, DeleteContactEventsDTO> eventDeleteContactKafkaTemplate;
+    private final KafkaTemplate<String, EventDTO> eventKafkaTemplate;
 
     @Override
-    public void addContactEvent(CreateContactEventDTO createContactEventDTO) {
-        eventContactKafkaTemplate.send(KafkaTopics.EVENT_ADD.getValue(), "contact", createContactEventDTO);
+    public void addEvent(EventDTO eventDTO) {
+        eventKafkaTemplate.send(KafkaTopics.EVENT.getValue(), eventDTO);
     }
 
-    @Override
-    public void deleteContactEvents(DeleteContactEventsDTO deleteContactEventsDTO) {
-        eventDeleteContactKafkaTemplate.send(KafkaTopics.EVENT_DELETE.getValue(), "contact-delete",
-                deleteContactEventsDTO);
-    }
 }
