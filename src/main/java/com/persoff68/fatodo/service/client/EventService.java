@@ -84,7 +84,7 @@ public class EventService {
     public void sendDeleteRelationEvent(Relation relation, UUID userId) {
         List<UUID> userIdList = List.of(relation.getFirstUserId(), relation.getSecondUserId());
         RelationDTO relationDTO = relationMapper.pojoToDTO(relation);
-        String payload = serialize(relation);
+        String payload = serialize(relationDTO);
         EventDTO wsEventWithUsersDTO = new EventDTO(userIdList, EventType.CONTACT_DELETE, payload, userId);
         eventServiceClient.addEvent(wsEventWithUsersDTO);
     }
