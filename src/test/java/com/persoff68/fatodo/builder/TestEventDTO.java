@@ -17,7 +17,7 @@ public class TestEventDTO extends EventDTO {
     public static TestEventDTOBuilder defaultBuilder() {
         return TestEventDTO.builder()
                 .userIdList(List.of(UUID.randomUUID()))
-                .type(EventType.CONTACT_ACCEPT_INCOMING)
+                .type(EventType.CONTACT_ACCEPT)
                 .userId(UUID.randomUUID());
     }
 

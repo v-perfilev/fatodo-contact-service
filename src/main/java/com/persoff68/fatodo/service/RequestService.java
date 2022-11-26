@@ -61,8 +61,7 @@ public class RequestService {
         }
 
         // EVENT
-        eventService.sendRequestIncomingEvent(request);
-        eventService.sendRequestOutcomingEvent(request);
+        eventService.sendRequestEvent(request);
 
         // WS
         wsService.sendRequestIncomingEvent(request);
@@ -78,8 +77,7 @@ public class RequestService {
         relationService.addForUsers(requesterId, recipientId);
 
         // EVENT
-        eventService.sendAcceptIncomingEvent(request);
-        eventService.sendAcceptOutcomingEvent(request);
+        eventService.sendAcceptEvent(request);
 
         // WS
         wsService.sendAcceptIncomingEvent(request);
@@ -94,12 +92,10 @@ public class RequestService {
         requestRepository.delete(request);
 
         // EVENT
-        eventService.sendDeleteIncomingEvent(request, userId);
-        eventService.sendDeleteOutcomingEvent(request, userId);
+        eventService.sendDeclineEvent(request, userId);
 
         // WS
-        wsService.sendDeleteIncomingEvent(request, userId);
-        wsService.sendDeleteOutcomingEvent(request, userId);
+        wsService.sendDeclineEvent(request, userId);
     }
 
 }

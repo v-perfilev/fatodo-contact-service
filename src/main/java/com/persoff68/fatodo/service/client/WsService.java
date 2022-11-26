@@ -65,20 +65,11 @@ public class WsService {
         wsServiceClient.sendEvent(wsEventDTO);
     }
 
-    public void sendDeleteIncomingEvent(Request request, UUID userId) {
-        List<UUID> userIdList = List.of(request.getRecipientId());
+    public void sendDeclineEvent(Request request, UUID userId) {
+        List<UUID> userIdList = List.of(request.getRequesterId(), request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
         String payload = serialize(requestDTO);
-        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList, WsEventType.CONTACT_DELETE_INCOMING, payload,
-                userId);
-        wsServiceClient.sendEvent(wsEventWithUsersDTO);
-    }
-
-    public void sendDeleteOutcomingEvent(Request request, UUID userId) {
-        List<UUID> userIdList = List.of(request.getRequesterId());
-        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        String payload = serialize(requestDTO);
-        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList, WsEventType.CONTACT_DELETE_OUTCOMING, payload,
+        WsEventDTO wsEventWithUsersDTO = new WsEventDTO(userIdList, WsEventType.CONTACT_DECLINE, payload,
                 userId);
         wsServiceClient.sendEvent(wsEventWithUsersDTO);
     }

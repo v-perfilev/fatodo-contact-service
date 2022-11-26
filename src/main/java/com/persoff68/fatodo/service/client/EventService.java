@@ -29,55 +29,29 @@ public class EventService {
     private final RelationMapper relationMapper;
     private final ObjectMapper objectMapper;
 
-    public void sendRequestIncomingEvent(Request request) {
-        List<UUID> userIdList = List.of(request.getRecipientId());
+    public void sendRequestEvent(Request request) {
+        List<UUID> userIdList = List.of(request.getRequesterId(), request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
         String payload = serialize(requestDTO);
-        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_REQUEST_INCOMING, payload,
+        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_REQUEST, payload,
                 request.getRequesterId());
         eventServiceClient.addEvent(eventDTO);
     }
 
-    public void sendRequestOutcomingEvent(Request request) {
-        List<UUID> userIdList = List.of(request.getRequesterId());
+    public void sendAcceptEvent(Request request) {
+        List<UUID> userIdList = List.of(request.getRequesterId(), request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
         String payload = serialize(requestDTO);
-        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_REQUEST_OUTCOMING, payload,
-                request.getRequesterId());
-        eventServiceClient.addEvent(eventDTO);
-    }
-
-    public void sendAcceptIncomingEvent(Request request) {
-        List<UUID> userIdList = List.of(request.getRecipientId());
-        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        String payload = serialize(requestDTO);
-        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_ACCEPT_INCOMING, payload,
+        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_ACCEPT, payload,
                 request.getRecipientId());
         eventServiceClient.addEvent(eventDTO);
     }
 
-    public void sendAcceptOutcomingEvent(Request request) {
-        List<UUID> userIdList = List.of(request.getRequesterId());
+    public void sendDeclineEvent(Request request, UUID userId) {
+        List<UUID> userIdList = List.of(request.getRequesterId(), request.getRecipientId());
         RequestDTO requestDTO = requestMapper.pojoToDTO(request);
         String payload = serialize(requestDTO);
-        EventDTO eventDTO = new EventDTO(userIdList, EventType.CONTACT_ACCEPT_OUTCOMING, payload,
-                request.getRecipientId());
-        eventServiceClient.addEvent(eventDTO);
-    }
-
-    public void sendDeleteIncomingEvent(Request request, UUID userId) {
-        List<UUID> userIdList = List.of(request.getRecipientId());
-        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        String payload = serialize(requestDTO);
-        EventDTO wsEventWithUsersDTO = new EventDTO(userIdList, EventType.CONTACT_DELETE_INCOMING, payload, userId);
-        eventServiceClient.addEvent(wsEventWithUsersDTO);
-    }
-
-    public void sendDeleteOutcomingEvent(Request request, UUID userId) {
-        List<UUID> userIdList = List.of(request.getRequesterId());
-        RequestDTO requestDTO = requestMapper.pojoToDTO(request);
-        String payload = serialize(requestDTO);
-        EventDTO wsEventWithUsersDTO = new EventDTO(userIdList, EventType.CONTACT_DELETE_OUTCOMING, payload, userId);
+        EventDTO wsEventWithUsersDTO = new EventDTO(userIdList, EventType.CONTACT_DECLINE, payload, userId);
         eventServiceClient.addEvent(wsEventWithUsersDTO);
     }
 
