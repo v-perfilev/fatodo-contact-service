@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -102,14 +101,14 @@ class EventProducerIT {
     }
 
     @Test
-    void testAndEventEvent() throws Exception {
+    void testAcceptEventEvent() throws Exception {
         requestService.accept(USER_ID_1, USER_ID_2);
 
         ConsumerRecord<String, EventDTO> record = eventRecords.poll(5, TimeUnit.SECONDS);
 
         assertThat(eventServiceClient).isInstanceOf(EventProducer.class);
         assertThat(record).isNotNull();
-        verify(eventServiceClient, times(2)).addEvent(any());
+        verify(eventServiceClient).addEvent(any());
     }
 
 
