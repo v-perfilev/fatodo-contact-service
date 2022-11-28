@@ -26,4 +26,8 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
             + " or (r.requesterId = ?2 AND r.recipientId = ?1)")
     List<Request> findAllByUserIds(UUID firstUserId, UUID secondUserId);
 
+    void deleteAllByRequesterId(UUID requesterId);
+
+    void deleteAllByRecipientId(UUID recipientId);
+
 }
