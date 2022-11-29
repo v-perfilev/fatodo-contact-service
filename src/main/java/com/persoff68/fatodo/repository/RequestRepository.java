@@ -2,6 +2,7 @@ package com.persoff68.fatodo.repository;
 
 import com.persoff68.fatodo.model.Request;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -26,8 +27,10 @@ public interface RequestRepository extends JpaRepository<Request, UUID> {
             + " or (r.requesterId = ?2 AND r.recipientId = ?1)")
     List<Request> findAllByUserIds(UUID firstUserId, UUID secondUserId);
 
+    @Modifying
     void deleteAllByRequesterId(UUID requesterId);
 
+    @Modifying
     void deleteAllByRecipientId(UUID recipientId);
 
 }
