@@ -39,6 +39,7 @@ public interface RelationRepository extends JpaRepository<Relation, UUID> {
 
     @Modifying
     @Query("DELETE FROM Relation r WHERE r.firstUserId = ?1 OR r.secondUserId = ?1")
-    @CacheEvictMethod(cacheName = "relations-by-id", key = "#userId")
-    void deleteAllByUserId(UUID userId);
+    @CacheEvictMethod(cacheName = "relations-by-id", key = "#contactRelationList.firstUserId")
+    @CacheEvictMethod(cacheName = "relations-by-id", key = "#contactRelationList.secondUserId")
+    void deleteAllByUserId(UUID userId, @NonNull Iterable<? extends Relation> contactRelationList);
 }
