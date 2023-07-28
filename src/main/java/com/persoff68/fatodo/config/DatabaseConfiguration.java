@@ -28,7 +28,7 @@ public class DatabaseConfiguration {
 
     @Bean
     public SpringLiquibase liquibase() {
-        removeExpiredLocks();
+//        removeExpiredLocks();
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setChangeLog("classpath:db/master.xml");
         liquibase.setDataSource(dataSource);
@@ -48,6 +48,7 @@ public class DatabaseConfiguration {
             } else {
                 log.info("No liquibase locks removed");
             }
+            statement.getConnection().close();
         } catch (SQLException e) {
             log.error("Remove liquibase lock threw and exception. ", e);
         }
